@@ -21,7 +21,7 @@ function addEFormScript(){
 }
 
 function ensureCallBeginFunction(){
-    if (addEFormButton) {
+    if (typeof addEFormButton === 'function') {
         addEFormButton();
     } else {
         setTimeout(addEFormButton, 1000);
