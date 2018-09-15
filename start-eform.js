@@ -1,3 +1,5 @@
+const TIME_PATTERN = /(\d{4}-\d{2}-\d{2})?\D+(\d{2}:\d{2})/g; 
+
 function getPRFs() {
     var prfs = [];
 
@@ -107,8 +109,7 @@ function buildEForm() {
 
 		let pagedTimeline = $('#timeline').find(`div.panel:contains('Incident Paged Out')`);
 		let pagedStr = pagedTimeline[pagedTimeline.length-1].innerText;
-		let rePaged = /(\d{4}-\d{2}-\d{2})?\D+(\d{2}:\d{2})/g; 
-		let mPaged = rePaged.exec(pagedStr); 
+		let mPaged = TIME_PATTERN.exec(pagedStr); 
 		if (mPaged) { 
 			console.log('STARTEFORM: Found Paged Time ' + mPaged[2]); 
 			vars['entry.915011561'] = mPaged[2];
@@ -116,14 +117,19 @@ function buildEForm() {
 			console.log('STARTEFORM: No Paged Time found: ' + pagedStr); 
 		} 
 
-		let mobileTimeline = $('#timeline').find(`div.panel:contains(' - Accepted')`);
-		if (mobileTimeline.length === 0) {
-			let mobileTimeline = $('#timeline').find(`div.panel:contains(' - Enroute')`);
-		} 
+		const mobileTimelineAccepted = $('#timeline').find(`div.panel:contains(' - Accepted')`);
+		const mobileTimelineEnRoute = $('#timeline').find(`div.panel:contains(' - Enroute')`);
+		let mobileTimeline;
+		if (mobileTimelineAccepted.length === 0) {
+			mobileTimeline = mobileTimelineEnRoute;
+		} else if (mobileTimelineEnRoute.length === 0){
+			mobileTimeline = mobileTimelineAccepted;
+		} else {
+			mobileTimeline = findEarliestTimelineItem(mobileTimelineAccepted, mobileTimelineEnRoute);
+		}
 		if (mobileTimeline.length > 0) {
 			let mobileStr = mobileTimeline[mobileTimeline.length-1].innerText;
-			let reMobile = /(\d{4}-\d{2}-\d{2})?\D+(\d{2}:\d{2})/g; 
-			let mMobile = reMobile.exec(mobileStr); 
+			let mMobile = TIME_PATTERN.exec(mobileStr); 
 			if (mMobile) { 
 				console.log('STARTEFORM: Found Mobile Time ' + mMobile[2]); 
 				vars['entry.295402896'] = mMobile[2];
@@ -137,8 +143,7 @@ function buildEForm() {
 		let onSceneTimeline = $('#timeline').find(`div.panel:contains(' - On Scene')`);
 		if (onSceneTimeline.length > 0) {
 			let onSceneStr = onSceneTimeline[onSceneTimeline.length-1].innerText;
-			let reOnScene = /(\d{4}-\d{2}-\d{2})?\D+(\d{2}:\d{2})/g; 
-			let mOnScene = reOnScene.exec(onSceneStr); 
+			let mOnScene = TIME_PATTERN.exec(onSceneStr); 
 			if (mOnScene) { 
 				console.log('STARTEFORM: Found On Scene Time ' + mOnScene[2]); 
 				vars['entry.865471720'] = mOnScene[2];
@@ -154,6 +159,14 @@ function buildEForm() {
 		proceed();
 	});
 } 
+
+function findEarliestTimelineItem(timelineList1, timelineList2){
+	if (timelineList1[timelineList1.length-1].offsetTop > timelineList2[timelineList2.length-1].offsetTop) { 
+		return timelineList1;
+	} else {
+		return timelineList2;
+	}
+}
 
 function addEFormButton() {
 	$('<a class=\"btn btn-xs btn-default\" href=\"javascript:buildEForm();\" id=\"BuildEForm\">Start eForm</a>').insertAfter( '#ToggleStatus[data-statusid=1]' );
