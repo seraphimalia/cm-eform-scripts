@@ -137,7 +137,7 @@ function buildEForm() {
 		var prfs = getPRFs();
 		console.log('STARTEFORM: Found ' + prfs.length + ' PRFs');
 		for (var i = 0; i < prfs.length; i++) {
-			const allVars = Object.assign({}, vars, prfs[1]);
+			const allVars = Object.assign({}, vars, prfs[i]);
 			console.log(allVars);
 			var queryString = Object.keys(allVars).map(function(key) {
 				return key + '=' + allVars[key]
