@@ -190,3 +190,5 @@ function ConfirmDialog(message, yesCallback, noCallback) {
         }
     });
 }
+
+addEFormButton();
