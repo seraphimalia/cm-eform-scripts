@@ -33,7 +33,7 @@ if (document.location.href.startsWith('https://cm.rpdy.io/Orders/') && document.
     document.addEventListener("DOMContentLoaded", function(event) { 
         addJQueryUi();
         addEFormScript();
-        addEFormButton();
+        ensureCallBeginFunction();
     });
 } else {
     console.log("CDInjector: No Incident page was detected.");
