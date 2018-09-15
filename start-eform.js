@@ -61,7 +61,7 @@ function buildEForm() {
 	for (let i = 0; i < responderList.length; i++) { 
 		let element = responderList[i];
 		if (element.innerText.indexOf('Unknown') === -1) { 
-			let re = /([A-Z]{2}\\d{2,3})[\\D$]/g; 
+			let re = /([A-Z]{2}\d{2,3})[\D$]/g; 
             let m = re.exec(element.innerText); 
 			if (m) { 
                 console.log('STARTEFORM: ' + i + ': Found ' + m[1]); 
@@ -107,7 +107,7 @@ function buildEForm() {
 
 		let pagedTimeline = $('#timeline').find(`div.panel:contains('Incident Paged Out')`);
 		let pagedStr = pagedTimeline[pagedTimeline.length-1].innerText;
-		let rePaged = /(\\d{4}-\\d{2}-\\d{2})?\\D+(\\d{2}:\\d{2})/g; 
+		let rePaged = /(\d{4}-\d{2}-\d{2})?\D+(\d{2}:\d{2})/g; 
 		let mPaged = rePaged.exec(pagedStr); 
 		if (mPaged) { 
 			console.log('STARTEFORM: Found Paged Time ' + mPaged[2]); 
@@ -122,7 +122,7 @@ function buildEForm() {
 		} 
 		if (mobileTimeline.length > 0) {
 			let mobileStr = mobileTimeline[mobileTimeline.length-1].innerText;
-			let reMobile = /(\\d{4}-\\d{2}-\\d{2})?\\D+(\\d{2}:\\d{2})/g; 
+			let reMobile = /(\d{4}-\d{2}-\d{2})?\D+(\d{2}:\d{2})/g; 
 			let mMobile = reMobile.exec(mobileStr); 
 			if (mMobile) { 
 				console.log('STARTEFORM: Found Mobile Time ' + mMobile[2]); 
@@ -137,7 +137,7 @@ function buildEForm() {
 		let onSceneTimeline = $('#timeline').find(`div.panel:contains(' - On Scene')`);
 		if (onSceneTimeline.length > 0) {
 			let onSceneStr = onSceneTimeline[onSceneTimeline.length-1].innerText;
-			let reOnScene = /(\\d{4}-\\d{2}-\\d{2})?\\D+(\\d{2}:\\d{2})/g; 
+			let reOnScene = /(\d{4}-\d{2}-\d{2})?\D+(\d{2}:\d{2})/g; 
 			let mOnScene = reOnScene.exec(onSceneStr); 
 			if (mOnScene) { 
 				console.log('STARTEFORM: Found On Scene Time ' + mOnScene[2]); 
@@ -158,7 +158,7 @@ function buildEForm() {
 function addEFormButton() {
 	$('<a class=\"btn btn-xs btn-default\" href=\"javascript:buildEForm();\" id=\"BuildEForm\">Start eForm</a>').insertAfter( '#ToggleStatus[data-statusid=1]' );
 	if ($('#BuildEForm').length === 0) {
-		console.log('STARTEFORM: EForm Button Not Added, Trying again Later!');
+		//console.log('STARTEFORM: EForm Button Not Added, Trying again Later!');
 		setTimeout(addEFormButton, 5000);
 	} else {
 		console.log('STARTEFORM: EForm Button Added');
