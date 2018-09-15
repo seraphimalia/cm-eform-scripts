@@ -4,23 +4,27 @@ function getPRFs() {
     var prfFormContainer = $('#ChecklistsContainer').find(`div[data-checklist-id]`);
     if (prfFormContainer.length > 0) {
         for (var i = 0; i < prfFormContainer.length; i++) {
-            var prf = {};
-            prf['entry.666285626'] = prfFormContainer.find(`label:contains('PRF Number')`)[i].nextSibling.value; 
-            prf['entry.2108097200'] = prfFormContainer.find(`label:contains('Triage')`)[i].nextSibling.value; 
-            prf['entry.847941590'] = prfFormContainer.find(`label:contains('Patient Gender')`)[i].nextSibling.value; 
-            prf['entry.1646195359'] = prfFormContainer.find(`label:contains('Patient Age (Years)')`)[i].nextSibling.value; 
-            prf['entry.1552249109'] = prfFormContainer.find(`label:contains('Patient Ethnic Group')`)[i].nextSibling.value; 
-            prfs.push(prf);
+			if (prfFormContainer.find(`label:contains('PRF Number')`)[i].nextSibling.value > 0) {
+				var prf = {};
+				prf['entry.666285626'] = prfFormContainer.find(`label:contains('PRF Number')`)[i].nextSibling.value; 
+				prf['entry.2108097200'] = prfFormContainer.find(`label:contains('Triage')`)[i].nextSibling.value; 
+				prf['entry.847941590'] = prfFormContainer.find(`label:contains('Patient Gender')`)[i].nextSibling.value; 
+				prf['entry.1646195359'] = prfFormContainer.find(`label:contains('Patient Age (Years)')`)[i].nextSibling.value; 
+				prf['entry.1552249109'] = prfFormContainer.find(`label:contains('Patient Ethnic Group')`)[i].nextSibling.value; 
+				prfs.push(prf);
+			}
         }
-	} else {
-        var prf = {};
+    }
+
+	if (prfs.length === 0) {
+		var prf = {};
 		prf['entry.2108097200'] = 'Unknown'; 
 		prf['entry.847941590'] = 'No Patient'; 
 		prf['entry.1646195359'] = -1; 
         prf['entry.1552249109'] = 'Unknown'; 
         prfs.push(prf);
-    }
-    
+	}
+
     return prfs;
 }
 
