@@ -52,7 +52,7 @@ function buildEForm() {
     // Building Responder List
 	let responders = []; 
     let responderList = $('#ActiveRespondersPane').find('.scroller')[0].children; 
-    console.log('Responder List Length is: ' + responderList.length); 
+    console.log('STARTEFORM: Responder List Length is: ' + responderList.length); 
 
 	for (let i = 0; i < responderList.length; i++) { 
 		let element = responderList[i];
@@ -60,13 +60,13 @@ function buildEForm() {
 			let re = /([A-Z]{2}\\d{2,3})[\\D$]/g; 
             let m = re.exec(element.innerText); 
 			if (m) { 
-                console.log(i + ': Found ' + m[1]); 
+                console.log('STARTEFORM: ' + i + ': Found ' + m[1]); 
 			    responders.push(m[1]); 
 			} else { 
-                console.log(i + ': No Callsign Found in text: ' + element.innerText); 
+                console.log('STARTEFORM: ' + i + ': No Callsign Found in text: ' + element.innerText); 
             } 
 		} else {
-            console.log(i + ': Ignored'); 
+            console.log('STARTEFORM: ' + i + ': Ignored'); 
         } 
 	} 
     vars['entry.1725583490'] = responders.join(','); 
@@ -82,7 +82,7 @@ function buildEForm() {
         revealScheduledDate(); 
 
         var prfs = getPRFs();
-        console.log('Found ' + prfs.length + ' PRFs');
+        console.log('STARTEFORM: Found ' + prfs.length + ' PRFs');
         for (var i = 0; i < prfs.length; i++) {
             const allVars = Object.assign({}, vars, prfs[1]);
             console.log(allVars);
@@ -106,10 +106,10 @@ function buildEForm() {
 		let rePaged = /(\\d{4}-\\d{2}-\\d{2})?\\D+(\\d{2}:\\d{2})/g; 
 		let mPaged = rePaged.exec(pagedStr); 
 		if (mPaged) { 
-			console.log('Found Paged Time ' + mPaged[2]); 
+			console.log('STARTEFORM: Found Paged Time ' + mPaged[2]); 
 			vars['entry.915011561'] = mPaged[2];
 		} else { 
-			console.log('No Paged Time found: ' + pagedStr); 
+			console.log('STARTEFORM: No Paged Time found: ' + pagedStr); 
 		} 
 
 		let mobileTimeline = $('#timeline').find(`div.panel:contains(' - Accepted')`);
@@ -121,13 +121,13 @@ function buildEForm() {
 			let reMobile = /(\\d{4}-\\d{2}-\\d{2})?\\D+(\\d{2}:\\d{2})/g; 
 			let mMobile = reMobile.exec(mobileStr); 
 			if (mMobile) { 
-				console.log('Found Mobile Time ' + mMobile[2]); 
+				console.log('STARTEFORM: Found Mobile Time ' + mMobile[2]); 
 				vars['entry.295402896'] = mMobile[2];
 			} else { 
-				console.log('No Mobile Time found: ' + mobileStr); 
+				console.log('STARTEFORM: No Mobile Time found: ' + mobileStr); 
 			} 
 		} else { 
-			console.log('There was no history for Mobile Time'); 
+			console.log('STARTEFORM: There was no history for Mobile Time'); 
 		} 
 
 		let onSceneTimeline = $('#timeline').find(`div.panel:contains(' - On Scene')`);
@@ -136,13 +136,13 @@ function buildEForm() {
 			let reOnScene = /(\\d{4}-\\d{2}-\\d{2})?\\D+(\\d{2}:\\d{2})/g; 
 			let mOnScene = reOnScene.exec(onSceneStr); 
 			if (mOnScene) { 
-				console.log('Found On Scene Time ' + mOnScene[2]); 
+				console.log('STARTEFORM: Found On Scene Time ' + mOnScene[2]); 
 				vars['entry.865471720'] = mOnScene[2];
 			} else { 
-				console.log('No On Scene Time found: ' + onSceneStr); 
+				console.log('STARTEFORM: No On Scene Time found: ' + onSceneStr); 
 			} 
 		} else { 
-			console.log('There was no history for On Scene Time'); 
+			console.log('STARTEFORM: There was no history for On Scene Time'); 
 		} 
 
 		alert('REMEMBER TO DOUBLE CHECK THE TIMES!!!');
@@ -154,8 +154,10 @@ function buildEForm() {
 function addEFormButton() {
 	$('<a class=\"btn btn-xs btn-default\" href=\"javascript:buildEForm();\" id=\"BuildEForm\">Start eForm</a>').insertAfter( '#ToggleStatus[data-statusid=1]' );
 	if ($('#BuildEForm').length === 0) {
-		console.log('EForm Button Not Added, Trying again Later!');
+		console.log('STARTEFORM: EForm Button Not Added, Trying again Later!');
 		setTimeout(addEFormButton, 5000);
+	} else {
+		console.log('STARTEFORM: EForm Button Added');
 	}
 }
 
