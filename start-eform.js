@@ -1,6 +1,6 @@
 /*
 https://docs.google.com/forms/d/e/1FAIpQLSdvItLqUEhOqDSqB1i7LwzyTFg2JHh9BphL7Dic0GunUucQ4A/viewform?usp=pp_url&
-entry.1261286527=Emergency+Line&     		-- $("#DynamicListsContainer").find(`div[data-groupid='319']`).find(`label:contains('Call Source')`)[0].nextSibling.innerText
+entry.1261286527=Emergency+Line&	 		-- $("#DynamicListsContainer").find(`div[data-groupid='319']`).find(`label:contains('Call Source')`)[0].nextSibling.innerText
 entry.1014478975=Other&
 entry.1772041708=West+Metro+(WC,+CPT)&
 entry.1654195642=20123123/12&				-- $("#IncidentReference").html()
@@ -34,11 +34,11 @@ entry.162948545=Resq-Medix
 */
 
 function getPRFs() {
-    var prfs = [];
+	var prfs = [];
 
-    var prfFormContainer = $('#ChecklistsContainer').find(`div[data-checklist-id]`);
-    if (prfFormContainer.length > 0) {
-        for (var i = 0; i < prfFormContainer.length; i++) {
+	var prfFormContainer = $('#ChecklistsContainer').find(`div[data-checklist-id]`);
+	if (prfFormContainer.length > 0) {
+		for (var i = 0; i < prfFormContainer.length; i++) {
 			if (prfFormContainer.find(`label:contains('PRF Number')`)[i].nextSibling.value > 0) {
 				var prf = {};
 				prf['entry.666285626'] = prfFormContainer.find(`label:contains('PRF Number')`)[i].nextSibling.value; 
@@ -48,25 +48,25 @@ function getPRFs() {
 				prf['entry.1552249109'] = prfFormContainer.find(`label:contains('Patient Ethnic Group')`)[i].nextSibling.value; 
 				prfs.push(prf);
 			}
-        }
-    }
+		}
+	}
 
 	if (prfs.length === 0) {
 		var prf = {};
 		prf['entry.2108097200'] = 'Unknown'; 
 		prf['entry.847941590'] = 'No Patient'; 
 		prf['entry.1646195359'] = -1; 
-        prf['entry.1552249109'] = 'Unknown'; 
-        prfs.push(prf);
+		prf['entry.1552249109'] = 'Unknown'; 
+		prfs.push(prf);
 	}
 
-    return prfs;
+	return prfs;
 }
 
 function buildEForm() {
 	var vars = {};
 
-    // Source
+	// Source
 	vars['entry.1261286527'] = $('#DynamicListsContainer').find(`div[data-groupid='319']`).find(`label:contains('Call Source')`)[0].nextSibling.innerText;
 	if (vars['entry.1261286527'] === 'External Agency (DOH)') {
 		vars['entry.1261286527'] = 'External Agency (DoH)';
@@ -78,20 +78,20 @@ function buildEForm() {
 		vars['entry.1014478975'] = 'Other'
 	}
 
-    // Incident Number
+	// Incident Number
 	vars['entry.1654195642'] = $('#IncidentReference').html(); 
-    
-    // Incident Date
+	
+	// Incident Date
 	var s = $('#IncidentReference').html().substring(0, $('#IncidentReference').html().indexOf('/')); 
 	vars['entry.2077619580'] = [s.slice(0, 4), s.slice(4,6), s.slice(6,8)].join('-'); 
-    
-    // Priority
+	
+	// Priority
 	vars['entry.1375744071'] = $('#PrimaryComplaintTitle')[0].innerText.charAt($('#PrimaryComplaintTitle')[0].innerText.length-1); 
 
-    // Building Responder List
+	// Building Responder List
 	let responders = []; 
-    let responderList = $('#ActiveRespondersPane').find('.scroller')[0].children; 
-    console.log('STARTEFORM: Responder List Length is: ' + responderList.length); 
+	let responderList = $('#ActiveRespondersPane').find('.scroller')[0].children; 
+	console.log('STARTEFORM: Responder List Length is: ' + responderList.length); 
 
 	for (let i = 0; i < responderList.length; i++) { 
 		let element = responderList[i];
@@ -101,16 +101,16 @@ function buildEForm() {
 				responders.push(callsign); 
 			}
 		} else {
-            console.log('STARTEFORM: ' + i + ': Ignored'); 
-        } 
+			console.log('STARTEFORM: ' + i + ': Ignored'); 
+		} 
 	} 
-    vars['entry.1725583490'] = responders.join(','); 
-    
-    // Address
-    vars['entry.895328514'] = $('#AddressLine').html();
+	vars['entry.1725583490'] = responders.join(','); 
+	
+	// Address
+	vars['entry.895328514'] = $('#AddressLine').html();
 
-    // Longitude & Latitude
-    vars['entry.237290975'] = $('#AddressLineLatLng').html();
+	// Longitude & Latitude
+	vars['entry.237290975'] = $('#AddressLineLatLng').html();
 
 	// First On Scene
 	if (!isResponseVehicleAssigned()) {
@@ -132,22 +132,22 @@ function buildEForm() {
 
 	var proceed = () => {
 
-        revealScheduledDate(); 
+		revealScheduledDate(); 
 
-        var prfs = getPRFs();
-        console.log('STARTEFORM: Found ' + prfs.length + ' PRFs');
-        for (var i = 0; i < prfs.length; i++) {
-            const allVars = Object.assign({}, vars, prfs[1]);
-            console.log(allVars);
-            var queryString = Object.keys(allVars).map(function(key) {
-                return key + '=' + allVars[key]
-            }).join('&');
-    
-            window.open('https://docs.google.com/forms/d/e/1FAIpQLSdvItLqUEhOqDSqB1i7LwzyTFg2JHh9BphL7Dic0GunUucQ4A/viewform?usp=pp_url&' + queryString);
-        }
+		var prfs = getPRFs();
+		console.log('STARTEFORM: Found ' + prfs.length + ' PRFs');
+		for (var i = 0; i < prfs.length; i++) {
+			const allVars = Object.assign({}, vars, prfs[1]);
+			console.log(allVars);
+			var queryString = Object.keys(allVars).map(function(key) {
+				return key + '=' + allVars[key]
+			}).join('&');
+	
+			window.open('https://docs.google.com/forms/d/e/1FAIpQLSdvItLqUEhOqDSqB1i7LwzyTFg2JHh9BphL7Dic0GunUucQ4A/viewform?usp=pp_url&' + queryString);
+		}
 	};
 
-    // Get Times if it is not a backlogged incident
+	// Get Times if it is not a backlogged incident
 	ConfirmDialog('Is this a backlogged incident?', () => {proceed();}, () => {
 		var incidentTimeStr = $('#ScheduleDateTime').html();
 		var incidentSplit = incidentTimeStr.split(' ');
@@ -216,7 +216,7 @@ function extractTimeFromTimelineElement(name, timelineElement){
 function extractCallsignFromTimelineElement(timelineElement){
 	const CALLSIGN_PATTERN = /([A-Z]{2}\d{2,3})[\D$]/g;
 	let innerText = timelineElement.innerText;
-	let match = TIME_PATTERN.exec(innerText); 
+	let match = CALLSIGN_PATTERN.exec(innerText); 
 	if (match) { 
 		console.log('STARTEFORM: Found callsign ' + match[1]); 
 		return match[1];
@@ -253,25 +253,25 @@ function revealScheduledDate() {
 }
 
 function ConfirmDialog(message, yesCallback, noCallback) {
-    $('<div></div>').appendTo('body')
-    .html('<div><h6>'+message+'?</h6></div>')
-    .dialog({
-        modal: true, title: 'Confirm?', zIndex: 10000, autoOpen: true,
-        width: 'auto', resizable: false,
-        buttons: {
-            Yes: function () {
-                yesCallback();
-                $(this).dialog('close');
-            },
-            No: function () {
-                noCallback();
-                $(this).dialog('close');
-            }
-        },
-        close: function (event, ui) {
-            $(this).remove();
-        }
-    });
+	$('<div></div>').appendTo('body')
+	.html('<div><h6>'+message+'?</h6></div>')
+	.dialog({
+		modal: true, title: 'Confirm?', zIndex: 10000, autoOpen: true,
+		width: 'auto', resizable: false,
+		buttons: {
+			Yes: function () {
+				yesCallback();
+				$(this).dialog('close');
+			},
+			No: function () {
+				noCallback();
+				$(this).dialog('close');
+			}
+		},
+		close: function (event, ui) {
+			$(this).remove();
+		}
+	});
 }
 
 addEFormButton();
