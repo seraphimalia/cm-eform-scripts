@@ -21,8 +21,8 @@ function addEFormScript(){
 }
 
 function ensureCallBeginFunction(){
-    if (typeof addEFormButton === 'function') {
-        addEFormButton();
+    if (typeof window.addEFormButton === 'function') {
+        window.addEFormButton();
     } else {
         setTimeout(ensureCallBeginFunction, 1000);
     }
