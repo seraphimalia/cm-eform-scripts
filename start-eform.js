@@ -1,3 +1,37 @@
+/*
+https://docs.google.com/forms/d/e/1FAIpQLSdvItLqUEhOqDSqB1i7LwzyTFg2JHh9BphL7Dic0GunUucQ4A/viewform?usp=pp_url&
+entry.1261286527=Emergency+Line&     		-- $("#DynamicListsContainer").find(`div[data-groupid='319']`).find(`label:contains('Call Source')`)[0].nextSibling.innerText
+entry.1014478975=Other&
+entry.1772041708=West+Metro+(WC,+CPT)&
+entry.1654195642=20123123/12&				-- $("#IncidentReference").html()
+entry.2077619580=2018-01-01&				-- var s = $("#IncidentReference").html().substring(0, $("#IncidentReference").html().indexOf('/')); [s.slice(0, 4), s.slice(4,6), s.slice(6,8)].join('-');
+entry.1655594278=Assault+-+Physical&
+entry.1375744071=1&							-- $("#PrimaryComplaintTitle")[0].innerText.charAt($("#PrimaryComplaintTitle")[0].innerText.length-1)
+entry.393375178=RV01&
+entry.1725583490=No+Callsigns&
+entry.524386880=00:00&
+entry.915011561=00:01&
+entry.295402896=00:02&
+entry.865471720=00:03&
+entry.1363793843=00:04&
+entry.1684388733=00:05&
+entry.835032369=00:06&
+entry.895328514=Incident+Address&
+entry.237290975=-33.8590,18.5209&
+entry.624304548=Abdominal+Complaint&
+entry.666285626=PRF+Number&
+entry.2018139507=Yes&
+entry.357722881=No&
+entry.1842118913=Yes&
+entry.1529614769=Mistakes&
+entry.2108097200=Red&
+entry.847941590=Female&
+entry.1646195359=99&
+entry.1552249109=Asian&
+entry.867510255=Non-billable&
+entry.1807757148=Government+Facility&
+entry.162948545=Resq-Medix
+*/
 
 function getPRFs() {
     var prfs = [];
@@ -62,14 +96,10 @@ function buildEForm() {
 	for (let i = 0; i < responderList.length; i++) { 
 		let element = responderList[i];
 		if (element.innerText.indexOf('Unknown') === -1) { 
-			let re = /([A-Z]{2}\d{2,3})[\D$]/g; 
-            let m = re.exec(element.innerText); 
-			if (m) { 
-                console.log('STARTEFORM: ' + i + ': Found ' + m[1]); 
-			    responders.push(m[1]); 
-			} else { 
-                console.log('STARTEFORM: ' + i + ': No Callsign Found in text: ' + element.innerText); 
-            } 
+			const callsign = extractCallsignFromTimelineElement(element);
+			if (callsign) {
+				responders.push(callsign); 
+			}
 		} else {
             console.log('STARTEFORM: ' + i + ': Ignored'); 
         } 
@@ -81,6 +111,24 @@ function buildEForm() {
 
     // Longitude & Latitude
     vars['entry.237290975'] = $('#AddressLineLatLng').html();
+
+	// First On Scene
+	if (!isResponseVehicleAssigned()) {
+		const firstOnSceneTimeline = $('#timeline').find(`div.panel:contains(' - On Scene')`);
+		if (firstOnSceneTimeline.length > 0) {
+			const callsign = extractCallsignFromTimelineElement(firstOnSceneTimeline[firstOnSceneTimeline.length-1]);
+			if (callsign) {
+				vars['entry.393375178'] = determineCallsignVehicle(callsign);
+			} else {
+				vars['entry.393375178'] = "No CM Resources";
+			}
+		} else { 
+			console.log('STARTEFORM: There was no history for First On Scene');
+			vars['entry.393375178'] = "No CM Resources";
+		} 
+	} else { 
+		console.log('STARTEFORM: Ignoring first on scene because an RV was assigned.');
+	} 
 
 	var proceed = () => {
 
@@ -138,6 +186,20 @@ function buildEForm() {
 	});
 } 
 
+function isResponseVehicleAssigned() {
+	const mobileTimelineAccepted = $('#timeline').find(`div.panel:contains(' - Accepted')`);
+	return mobileTimelineAccepted.length > 0;
+}
+
+function determineCallsignVehicle(callsign) {
+	const firstTwoCharacters = callsign.substring(0,1);
+	if (firstTwoCharacters === 'RV' || firstTwoCharacters === 'LC' || firstTwoCharacters === 'VP' || firstTwoCharacters === 'CS') {
+		return callsign;
+	} else {
+		return "Private Vehicle";
+	}
+}
+
 function extractTimeFromTimelineElement(name, timelineElement){
 	const TIME_PATTERN = /(\d{4}-\d{2}-\d{2})?\D+(\d{2}:\d{2})/g;
 	let innerText = timelineElement.innerText;
@@ -149,6 +211,19 @@ function extractTimeFromTimelineElement(name, timelineElement){
 		console.log('STARTEFORM: No ' + name + ' Time found: ' + innerText); 
 	} 
 	return '';
+}
+
+function extractCallsignFromTimelineElement(timelineElement){
+	const CALLSIGN_PATTERN = /([A-Z]{2}\d{2,3})[\D$]/g;
+	let innerText = timelineElement.innerText;
+	let match = TIME_PATTERN.exec(innerText); 
+	if (match) { 
+		console.log('STARTEFORM: Found callsign ' + match[1]); 
+		return match[1];
+	} else { 
+		console.log('STARTEFORM: No callsign found: ' + innerText); 
+	} 
+	return undefined;
 }
 
 function findEarliestTimelineItem(timelineList1, timelineList2){
