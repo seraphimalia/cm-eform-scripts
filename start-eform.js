@@ -1,4 +1,3 @@
-const TIME_PATTERN = /(\d{4}-\d{2}-\d{2})?\D+(\d{2}:\d{2})/g; 
 
 function getPRFs() {
     var prfs = [];
@@ -108,14 +107,7 @@ function buildEForm() {
 		vars['entry.524386880'] = timeStr;
 
 		let pagedTimeline = $('#timeline').find(`div.panel:contains('Incident Paged Out')`);
-		let pagedStr = pagedTimeline[pagedTimeline.length-1].innerText;
-		let mPaged = TIME_PATTERN.exec(pagedStr); 
-		if (mPaged) { 
-			console.log('STARTEFORM: Found Paged Time ' + mPaged[2]); 
-			vars['entry.915011561'] = mPaged[2];
-		} else { 
-			console.log('STARTEFORM: No Paged Time found: ' + pagedStr); 
-		} 
+		vars['entry.915011561'] = extractTimeFromTimelineElement('paged', pagedTimeline[pagedTimeline.length-1]);
 
 		const mobileTimelineAccepted = $('#timeline').find(`div.panel:contains(' - Accepted')`);
 		const mobileTimelineEnRoute = $('#timeline').find(`div.panel:contains(' - Enroute')`);
@@ -128,28 +120,14 @@ function buildEForm() {
 			mobileTimeline = findEarliestTimelineItem(mobileTimelineAccepted, mobileTimelineEnRoute);
 		}
 		if (mobileTimeline.length > 0) {
-			let mobileStr = mobileTimeline[mobileTimeline.length-1].innerText;
-			let mMobile = TIME_PATTERN.exec(mobileStr); 
-			if (mMobile) { 
-				console.log('STARTEFORM: Found Mobile Time ' + mMobile[2]); 
-				vars['entry.295402896'] = mMobile[2];
-			} else { 
-				console.log('STARTEFORM: No Mobile Time found: ' + mobileStr); 
-			} 
+			vars['entry.295402896'] = extractTimeFromTimelineElement('mobile', mobileTimeline[mobileTimeline.length-1]);
 		} else { 
 			console.log('STARTEFORM: There was no history for Mobile Time'); 
 		} 
 
 		let onSceneTimeline = $('#timeline').find(`div.panel:contains(' - On Scene')`);
 		if (onSceneTimeline.length > 0) {
-			let onSceneStr = onSceneTimeline[onSceneTimeline.length-1].innerText;
-			let mOnScene = TIME_PATTERN.exec(onSceneStr); 
-			if (mOnScene) { 
-				console.log('STARTEFORM: Found On Scene Time ' + mOnScene[2]); 
-				vars['entry.865471720'] = mOnScene[2];
-			} else { 
-				console.log('STARTEFORM: No On Scene Time found: ' + onSceneStr); 
-			} 
+			vars['entry.865471720'] = extractTimeFromTimelineElement('on scene', onSceneTimeline[onSceneTimeline.length-1]);
 		} else { 
 			console.log('STARTEFORM: There was no history for On Scene Time'); 
 		} 
@@ -159,6 +137,19 @@ function buildEForm() {
 		proceed();
 	});
 } 
+
+function extractTimeFromTimelineElement(name, timelineElement){
+	const TIME_PATTERN = /(\d{4}-\d{2}-\d{2})?\D+(\d{2}:\d{2})/g;
+	let innerText = timelineElement.innerText;
+	let match = TIME_PATTERN.exec(innerText); 
+	if (match) { 
+		console.log('STARTEFORM: Found ' + name + ' Time ' + match[2]); 
+		return match[2];
+	} else { 
+		console.log('STARTEFORM: No ' + name + ' Time found: ' + innerText); 
+	} 
+	return '';
+}
 
 function findEarliestTimelineItem(timelineList1, timelineList2){
 	if (timelineList1[timelineList1.length-1].offsetTop > timelineList2[timelineList2.length-1].offsetTop) { 
