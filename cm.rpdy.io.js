@@ -20,12 +20,20 @@ function addEFormScript(){
     addJSScript("https://raw.githubusercontent.com/seraphimalia/cm-eform-scripts/master/start-eform.js");
 }
 
+function ensureCallBeginFunction(){
+    if (addEFormButton) {
+        addEFormButton();
+    } else {
+        setTimeout(addEFormButton, 1000);
+    }
+}
+
 if (document.location.href.startsWith('https://cm.rpdy.io/Orders/') && document.location.href.replace('https://cm.rpdy.io/Orders/', '') > 0) {
     console.log("CDInjector: Incident Page Detected");
     document.addEventListener("DOMContentLoaded", function(event) { 
         addJQueryUi();
         addEFormScript();
-        addEFormButton();
+        ensureCallBeginFunction();
     });
 } else {
     console.log("CDInjector: No Incident page was detected.");
