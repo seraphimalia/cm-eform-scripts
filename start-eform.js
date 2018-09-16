@@ -145,7 +145,10 @@ function buildEForm() {
 
 			const eFormURL = 'https://docs.google.com/forms/d/e/1FAIpQLSdvItLqUEhOqDSqB1i7LwzyTFg2JHh9BphL7Dic0GunUucQ4A/viewform?usp=pp_url&' + queryString;
 			const accountChooserURL = 'https://www.google.com/accounts/AccountChooser?Email=&continue=' + encodeURIComponent(eFormURL);
-			
+
+			console.log('eFormUrl: ' + eFormURL);
+			console.log('accountChooserURL: ' + accountChooserURL);
+
 			window.open(accountChooserURL);
 		}
 	};
