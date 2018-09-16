@@ -39,7 +39,7 @@ function getPRFs() {
 	var prfFormContainer = $('#ChecklistsContainer').find(`div[data-checklist-id]`);
 	if (prfFormContainer.length > 0) {
 		for (var i = 0; i < prfFormContainer.length; i++) {
-			if (prfFormContainer.find(`label:contains('PRF Number')`)[i].nextSibling.value > 0) {
+			if (prfFormContainer.find(`label:contains('PRF Number')`)[i].nextSibling.value > 0 && typeof prfFormContainer.find(`label:contains('Triage')`)[i] !== 'undefined') {
 				var prf = {};
 				prf['entry.666285626'] = prfFormContainer.find(`label:contains('PRF Number')`)[i].nextSibling.value; 
 				prf['entry.2108097200'] = prfFormContainer.find(`label:contains('Triage')`)[i].nextSibling.value; 
