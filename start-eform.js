@@ -144,7 +144,7 @@ function buildEForm() {
 			}).join('&');
 
 			const eFormURL = 'https://docs.google.com/forms/d/e/1FAIpQLSdvItLqUEhOqDSqB1i7LwzyTFg2JHh9BphL7Dic0GunUucQ4A/viewform?usp=pp_url&' + queryString;
-			const accountChooserURL = 'https://www.google.com/accounts/AccountChooser?Email=&continue=' + encodeURIComponent(eFormURL);
+			const accountChooserURL = 'https://accounts.google.com/AccountChooser/signinchooser?Email&flowName=GlifWebSignIn&flowEntry=AccountChooser&continue=' + encodeURIComponent(eFormURL);
 
 			console.log('STARTEFORM: eFormUrl: ' + eFormURL);
 			console.log('STARTEFORM: accountChooserURL: ' + accountChooserURL);
