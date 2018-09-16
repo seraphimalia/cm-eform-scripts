@@ -140,11 +140,11 @@ function buildEForm() {
 			const allVars = Object.assign({}, vars, prfs[i]);
 			console.log(allVars);
 			var queryString = Object.keys(allVars).map(function(key) {
-				return key + '=' + allVars[key]
+				return key + '=' + encodeURIComponent(allVars[key]);
 			}).join('&');
 
 			const eFormURL = 'https://docs.google.com/forms/d/e/1FAIpQLSdvItLqUEhOqDSqB1i7LwzyTFg2JHh9BphL7Dic0GunUucQ4A/viewform?usp=pp_url&' + queryString;
-			const accountChooserURL = 'https://www.google.com/accounts/AccountChooser?Email=&continue=' + encodeURIComponent(eFormURL).replace(/ /g, "%2B");
+			const accountChooserURL = 'https://www.google.com/accounts/AccountChooser?Email=&continue=' + encodeURIComponent(eFormURL);
 
 			console.log('STARTEFORM: eFormUrl: ' + eFormURL);
 			console.log('STARTEFORM: accountChooserURL: ' + accountChooserURL);
