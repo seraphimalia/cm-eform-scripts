@@ -142,8 +142,11 @@ function buildEForm() {
 			var queryString = Object.keys(allVars).map(function(key) {
 				return key + '=' + allVars[key]
 			}).join('&');
-	
-			window.open('https://docs.google.com/forms/d/e/1FAIpQLSdvItLqUEhOqDSqB1i7LwzyTFg2JHh9BphL7Dic0GunUucQ4A/viewform?usp=pp_url&' + queryString);
+
+			const eFormURL = 'https://docs.google.com/forms/d/e/1FAIpQLSdvItLqUEhOqDSqB1i7LwzyTFg2JHh9BphL7Dic0GunUucQ4A/viewform?usp=pp_url&' + queryString;
+			const accountChooserURL = 'https://www.google.com/accounts/AccountChooser?Email=&continue=' + encodeURIComponent(eFormURL);
+			
+			window.open(accountChooserURL);
 		}
 	};
 
