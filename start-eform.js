@@ -67,7 +67,7 @@ function buildEForm() {
 	var vars = {};
 
 	// Source
-	vars['entry.1261286527'] = $('#DynamicListsContainer').find(`div[data-groupid='319']`).find(`label:contains('Call Source')`)[0].nextSibling.innerText;
+	vars['entry.1261286527'] = $('#DynamicListsContainer').find(`div[data-groupid='319']`).find(`label:contains('Call Source')`)[1].nextSibling.innerText;
 	if (vars['entry.1261286527'] === 'External Agency (DOH)') {
 		vars['entry.1261286527'] = 'External Agency (DoH)';
 	}
