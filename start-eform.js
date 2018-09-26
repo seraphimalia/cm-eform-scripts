@@ -91,7 +91,7 @@ function buildEForm() {
 	// Building Responder List
 	let responders = []; 
 	let responderList = $('#ActiveRespondersPane').find('.scroller')[0].children; 
-	console.log('STARTEFORM: Responder List Length is: ' + responderList.length); 
+	//console.log('STARTEFORM: Responder List Length is: ' + responderList.length); 
 
 	for (let i = 0; i < responderList.length; i++) { 
 		let element = responderList[i];
@@ -101,7 +101,7 @@ function buildEForm() {
 				responders.push(callsign); 
 			}
 		} else {
-			console.log('STARTEFORM: ' + i + ': Ignored'); 
+			//console.log('STARTEFORM: ' + i + ': Ignored'); 
 		} 
 	} 
 	vars['entry.1725583490'] = responders.join(','); 
@@ -123,11 +123,11 @@ function buildEForm() {
 				vars['entry.393375178'] = "No CM Resources";
 			}
 		} else { 
-			console.log('STARTEFORM: There was no history for First On Scene');
+			//console.log('STARTEFORM: There was no history for First On Scene');
 			vars['entry.393375178'] = "No CM Resources";
 		} 
 	} else { 
-		console.log('STARTEFORM: Ignoring first on scene because an RV was assigned.');
+		//console.log('STARTEFORM: Ignoring first on scene because an RV was assigned.');
 	} 
 
 	var proceed = () => {
@@ -135,7 +135,7 @@ function buildEForm() {
 		revealScheduledDate(); 
 
 		var prfs = getPRFs();
-		console.log('STARTEFORM: Found ' + prfs.length + ' PRFs');
+		//console.log('STARTEFORM: Found ' + prfs.length + ' PRFs');
 		for (var i = 0; i < prfs.length; i++) {
 			const allVars = Object.assign({}, vars, prfs[i]);
 			console.log(allVars);
@@ -146,8 +146,8 @@ function buildEForm() {
 			const eFormURL = 'https://docs.google.com/forms/d/e/1FAIpQLSdvItLqUEhOqDSqB1i7LwzyTFg2JHh9BphL7Dic0GunUucQ4A/viewform?usp=pp_url&' + queryString;
 			const accountChooserURL = 'https://www.google.com/accounts/AccountChooser?Email=&continue=' + encodeURIComponent(eFormURL);
 			
-			console.log('STARTEFORM: eFormUrl: ' + eFormURL);
-			console.log('STARTEFORM: accountChooserURL: ' + accountChooserURL);
+			//console.log('STARTEFORM: eFormUrl: ' + eFormURL);
+			//console.log('STARTEFORM: accountChooserURL: ' + accountChooserURL);
 
 			window.open(accountChooserURL);
 		}
@@ -176,14 +176,14 @@ function buildEForm() {
 		if (mobileTimeline.length > 0) {
 			vars['entry.295402896'] = extractTimeFromTimelineElement('mobile', mobileTimeline[mobileTimeline.length-1]);
 		} else { 
-			console.log('STARTEFORM: There was no history for Mobile Time'); 
+			//console.log('STARTEFORM: There was no history for Mobile Time'); 
 		} 
 
 		let onSceneTimeline = $('#timeline').find(`div.panel:contains(' - On Scene')`);
 		if (onSceneTimeline.length > 0) {
 			vars['entry.865471720'] = extractTimeFromTimelineElement('on scene', onSceneTimeline[onSceneTimeline.length-1]);
 		} else { 
-			console.log('STARTEFORM: There was no history for On Scene Time'); 
+			//console.log('STARTEFORM: There was no history for On Scene Time'); 
 		} 
 
 		alert('REMEMBER TO DOUBLE CHECK THE TIMES!!!');
@@ -221,10 +221,10 @@ function extractTimeFromTimelineElement(name, timelineElement){
 	let innerText = timelineElement.innerText;
 	let match = TIME_PATTERN.exec(innerText); 
 	if (match) { 
-		console.log('STARTEFORM: Found ' + name + ' Time ' + match[2]); 
+		//console.log('STARTEFORM: Found ' + name + ' Time ' + match[2]); 
 		return match[2];
 	} else { 
-		console.log('STARTEFORM: No ' + name + ' Time found: ' + innerText); 
+		//console.log('STARTEFORM: No ' + name + ' Time found: ' + innerText); 
 	} 
 	return '';
 }
@@ -234,10 +234,10 @@ function extractCallsignFromTimelineElement(timelineElement){
 	let innerText = timelineElement.innerText;
 	let match = CALLSIGN_PATTERN.exec(innerText); 
 	if (match) { 
-		console.log('STARTEFORM: Found callsign ' + match[1]); 
+		//console.log('STARTEFORM: Found callsign ' + match[1]); 
 		return match[1];
 	} else { 
-		console.log('STARTEFORM: No callsign found: ' + innerText); 
+		//console.log('STARTEFORM: No callsign found: ' + innerText); 
 	} 
 	return undefined;
 }
@@ -256,7 +256,7 @@ function addEFormButton() {
 		//console.log('STARTEFORM: EForm Button Not Added, Trying again Later!');
 		setTimeout(addEFormButton, 5000);
 	} else {
-		console.log('STARTEFORM: EForm Button Added');
+		//console.log('STARTEFORM: EForm Button Added');
 	}
 }
 

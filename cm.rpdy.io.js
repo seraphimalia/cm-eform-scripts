@@ -21,11 +21,11 @@ function addEFormScript(){
 }
 
 if (document.location.href.startsWith('https://cm.rpdy.io/Orders/') && document.location.href.replace('https://cm.rpdy.io/Orders/', '') > 0) {
-    console.log("CDInjector: Incident Page Detected");
+    //console.log("CDInjector: Incident Page Detected");
     document.addEventListener("DOMContentLoaded", function(event) { 
         //addJQueryUi();
         addEFormScript();
     });
 } else {
-    console.log("CDInjector: No Incident page was detected.");
+    //console.log("CDInjector: No Incident page was detected.");
 }
