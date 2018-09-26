@@ -23,7 +23,7 @@ function addEFormScript(){
 if (document.location.href.startsWith('https://cm.rpdy.io/Orders/') && document.location.href.replace('https://cm.rpdy.io/Orders/', '') > 0) {
     console.log("CDInjector: Incident Page Detected");
     document.addEventListener("DOMContentLoaded", function(event) { 
-        addJQueryUi();
+        //addJQueryUi();
         addEFormScript();
     });
 } else {
