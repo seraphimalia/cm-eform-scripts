@@ -198,7 +198,17 @@ function isResponseVehicleAssigned() {
 }
 
 function determineCallsignVehicle(callsign) {
-	const firstTwoCharacters = callsign.substring(0,1);
+	// WIP
+	// let vehicles = $("#ActiveVehiclesPane").find(`div[data-type='Vehicle']`);
+	// for (let i = 0; i < vehicles.length; i++) {
+	// 	let vehicle = vehicles[i];
+	// 	let vehicleLabelElement = vehicle.find('h5');
+	// 	if (vehicleLabelElement) {
+	// 		let vehicleLabel = vehicleLabelElement.innerText;
+	// 		const firstTwoCharacters = callsign.substring(0,1);
+	// 	}
+
+	// }
 	if (firstTwoCharacters === 'RV' || firstTwoCharacters === 'LC' || firstTwoCharacters === 'VP' || firstTwoCharacters === 'CS') {
 		return callsign;
 	} else {
@@ -258,26 +268,53 @@ function revealScheduledDate() {
 	}
 }
 
+function appendEformDialog(message) {
+	$('<div class="modal stick-up in" id="eFormYesNoDialog" style="display: none;"> \
+		<div class="modal-dialog"> \
+			<div class="modal-content"> \
+				<div class="modal-header clearfix text-left"> \
+					<div class="row"> \
+						<div class="col-md-12"> \
+							<h4>Question</h4> \
+						</div> \
+					</div> \
+				</div> \
+				<div class="modal-body"> \
+					<div class="row"> \
+						<div class="col-md-12"> \
+							<p>' + message + '?</p> \
+						</div> \
+					</div> \
+				</div> \
+				<div class="panel-footer"> \
+					<button type="button" id="eFormDialogYes" class="btn btn-primary btn-complete">Yes</button> \
+					<button type="button" id="eFormDialogNo" class="btn btn-danger" data-dismiss="modal">No</button> \
+				</div> \
+			</div> \
+		</div> \
+	</div>').appendTo('body');
+}
+
+function showEformDialog() {
+	$('#eFormYesNoDialog').show();
+}
+
+function destroyEformDialog() {
+	$('#eFormYesNoDialog').remove();
+}
+
 function ConfirmDialog(message, yesCallback, noCallback) {
-	$('<div></div>').appendTo('body')
-	.html('<div><h6>'+message+'?</h6></div>')
-	.dialog({
-		modal: true, title: 'Confirm?', zIndex: 10000, autoOpen: true,
-		width: 'auto', resizable: false,
-		buttons: {
-			Yes: function () {
-				yesCallback();
-				$(this).dialog('close');
-			},
-			No: function () {
-				noCallback();
-				$(this).dialog('close');
-			}
-		},
-		close: function (event, ui) {
-			$(this).remove();
-		}
+	appendEformDialog(message);
+	$("#eFormDialogYes").click(function() {
+		yesCallback();
+		destroyEformDialog();
 	});
+	$("#eFormDialogNo").click(function() {
+		noCallback();
+		destroyEformDialog();
+	});
+
+	showEformDialog();
 }
 
 addEFormButton();
