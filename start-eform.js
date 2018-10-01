@@ -209,6 +209,7 @@ function determineCallsignVehicle(callsign) {
 	// 	}
 
 	// }
+	const firstTwoCharacters = callsign.substring(0,1);
 	if (firstTwoCharacters === 'RV' || firstTwoCharacters === 'LC' || firstTwoCharacters === 'VP' || firstTwoCharacters === 'CS') {
 		return callsign;
 	} else {
