@@ -67,15 +67,17 @@ function buildEForm() {
 	var vars = {};
 
 	// Source
-	vars['entry.1261286527'] = $('#DynamicListsContainer').find(`div[data-groupid='319']`).find(`label:contains('Call Source')`)[1].nextSibling.innerText;
-	if (vars['entry.1261286527'] === 'External Agency (DOH)') {
-		vars['entry.1261286527'] = 'External Agency (DoH)';
-	}
-	if (vars['entry.1261286527'] === 'Social Media (external)') {
-		vars['entry.1261286527'] = 'Social Media (External)';
-	}
-	if (vars['entry.1261286527'] === 'Emergency Line' || vars['entry.1261286527'] === 'External Agency (DoH)' || vars['entry.1261286527'] === 'External Agency (ER24)') {
-		vars['entry.1014478975'] = 'Other'
+	if ($('#DynamicListsContainer').find(`div[data-groupid='319']`).find(`label:contains('Call Source')`).length > 0) {
+		vars['entry.1261286527'] = $('#DynamicListsContainer').find(`div[data-groupid='319']`).find(`label:contains('Call Source')`)[1].nextSibling.innerText;
+		if (vars['entry.1261286527'] === 'External Agency (DOH)') {
+			vars['entry.1261286527'] = 'External Agency (DoH)';
+		}
+		if (vars['entry.1261286527'] === 'Social Media (external)') {
+			vars['entry.1261286527'] = 'Social Media (External)';
+		}
+		if (vars['entry.1261286527'] === 'Emergency Line' || vars['entry.1261286527'] === 'External Agency (DoH)' || vars['entry.1261286527'] === 'External Agency (ER24)') {
+			vars['entry.1014478975'] = 'Other'
+		}
 	}
 
 	// Incident Number
