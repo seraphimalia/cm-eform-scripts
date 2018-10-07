@@ -22,7 +22,7 @@ function addEFormScript(){
 }
 
 function _cdlog(text) {
-    if ((typeof window['CDInjector-debug'] !== 'undefined' && window['CDInjector-debug']) || document.location.href.indexOf('cdinjector-debug=true') !== -1) {
+    if ((typeof document['CDInjector-debug'] !== 'undefined' && document['CDInjector-debug']) || document.location.href.indexOf('cdinjector-debug=true') !== -1) {
         console.log(text);
     }
 }
