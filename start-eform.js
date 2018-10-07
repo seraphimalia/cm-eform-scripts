@@ -32,6 +32,11 @@ entry.867510255=Non-billable&
 entry.1807757148=Government+Facility&
 entry.162948545=Resq-Medix
 */
+function _cdlog(text) {
+    if (document.location.href.indexOf('cdinjector-debug=true') !== -1) {
+        console.log(text);
+    }
+}
 
 function getPRFs() {
 	var prfs = [];
