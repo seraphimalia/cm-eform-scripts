@@ -27,8 +27,16 @@ function _cdlog(text) {
     }
 }
 
+function extractOrderNumberFromUrl(url){
+    let ORDER_NUMBER_REGEX = /https:\/\/cm.rpdy.io\/Orders\/(\d+)(($)|(\?)|(\#))/;
+    let matches = ORDER_NUMBER_REGEX.exec(url);
+    if (matches.length > 1 && !isNaN(matches[1])){
+        return matches[1];
+    }
+    return undefined;
+}
 
-if (document.location.href.startsWith('https://cm.rpdy.io/Orders/') && document.location.href.replace('https://cm.rpdy.io/Orders/', '') > 0) {
+if (document.location.href.startsWith('https://cm.rpdy.io/Orders/') && extractOrderNumberFromUrl(document.location.href) > 0) {
     _cdlog("CDInjector: Incident Page Detected");
     document.addEventListener("DOMContentLoaded", function(event) { 
         //addJQueryUi();
