@@ -256,10 +256,10 @@ function findEarliestTimelineItem(timelineList1, timelineList2){
 function addEFormButton() {
 	$('<a class=\"btn btn-xs btn-default\" href=\"javascript:buildEForm();\" id=\"BuildEForm\">Start eForm</a>').insertAfter( '#ToggleStatus[data-statusid=1]' );
 	if ($('#BuildEForm').length === 0) {
-		console.log('STARTEFORM: EForm Button Not Added, Trying again Later!');
+		_cdlog('STARTEFORM: EForm Button Not Added, Trying again Later!');
 		setTimeout(addEFormButton, 5000);
 	} else {
-		console.log('STARTEFORM: EForm Button Added');
+		_cdlog('STARTEFORM: EForm Button Added');
 	}
 }
 

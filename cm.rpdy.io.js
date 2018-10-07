@@ -18,15 +18,22 @@ function addJQueryUi(){
 
 function addEFormScript(){
     addJSScript("https://rawgit.com/seraphimalia/cm-eform-scripts/master/start-eform.js");
-    console.log("CDInjector: Eform Script Added.");
+    _cdlog("CDInjector: Eform Script Added.");
 }
 
+function _cdlog(text) {
+    if ((typeof window['CDInjector-debug'] !== 'undefined' && window['CDInjector-debug']) || document.location.href.indexOf('cdinjector-debug=true') !== -1) {
+        console.log(text);
+    }
+}
+
+
 if (document.location.href.startsWith('https://cm.rpdy.io/Orders/') && document.location.href.replace('https://cm.rpdy.io/Orders/', '') > 0) {
-    //console.log("CDInjector: Incident Page Detected");
+    _cdlog("CDInjector: Incident Page Detected");
     document.addEventListener("DOMContentLoaded", function(event) { 
         //addJQueryUi();
         addEFormScript();
     });
 } else {
-    console.log("CDInjector: No Incident page was detected.");
+    _cdlog("CDInjector: No Incident page was detected: " + document.location.href);
 }
