@@ -41,7 +41,7 @@ function _cdlog(text) {
 function getPRFs() {
 	var prfs = [];
 
-	var prfFormContainer = $('#ChecklistsContainer').find(`div[data-checklist-id]`);
+	var prfFormContainer = $('#ChecklistsContainer').find(`div[data-checklist-id]`).has(`label:contains('PRF Number')`).has(`label:contains('Triage')`);
 	if (prfFormContainer.length > 0) {
 		for (var i = 0; i < prfFormContainer.length; i++) {
 			if (prfFormContainer.find(`label:contains('PRF Number')`)[i].nextSibling.value > 0 && typeof prfFormContainer.find(`label:contains('Triage')`)[i] !== 'undefined') {
