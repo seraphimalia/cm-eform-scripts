@@ -248,8 +248,9 @@ function extractCallTypeFromElement(primaryTypeElement) {
 	let htmlContent = primaryTypeElement.html();
 	let match = CALLTYPE_PATTERN.exec(htmlContent); 
 	if (match) { 
-		_cdlog('STARTEFORM: Found Call Type ' + match[1]); 
-		return match[1];
+		const callType = unEntity(match[1]);
+		_cdlog('STARTEFORM: Found Call Type ' + callType); 
+		return callType;
 	} else { 
 		_cdlog('STARTEFORM: No Call Type Found: ' + htmlContent); 
 	} 
@@ -275,6 +276,10 @@ function findEarliestTimelineItem(timelineList1, timelineList2){
 	} else {
 		return timelineList2;
 	}
+}
+
+function unEntity(str){
+	return str.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
 }
 
 function addEFormButton() {
