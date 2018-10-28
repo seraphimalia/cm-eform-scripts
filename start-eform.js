@@ -5,7 +5,7 @@ entry.1014478975=Other&
 entry.1772041708=West+Metro+(WC,+CPT)&
 entry.1654195642=20123123/12&				-- $("#IncidentReference").html()
 entry.2077619580=2018-01-01&				-- var s = $("#IncidentReference").html().substring(0, $("#IncidentReference").html().indexOf('/')); [s.slice(0, 4), s.slice(4,6), s.slice(6,8)].join('-');
-entry.1655594278=Assault+-+Physical&
+entry.1655594278=Assault+-+Physical&		-- $("#PrimaryComplaintTitle")[0].innerText
 entry.1375744071=1&							-- $("#PrimaryComplaintTitle")[0].innerText.charAt($("#PrimaryComplaintTitle")[0].innerText.length-1)
 entry.393375178=RV01&
 entry.1725583490=No+Callsigns&
@@ -92,6 +92,12 @@ function buildEForm() {
 	var s = $('#IncidentReference').html().substring(0, $('#IncidentReference').html().indexOf('/')); 
 	vars['entry.2077619580'] = [s.slice(0, 4), s.slice(4,6), s.slice(6,8)].join('-'); 
 	
+	// Call Type
+	vars['entry.1655594278'] = extractCallTypeFromElement($('#PrimaryComplaintTitle')[0]); 
+
+	// Outcome call type
+	vars['entry.624304548'] = vars['entry.1655594278'];
+
 	// Priority
 	vars['entry.1375744071'] = $('#PrimaryComplaintTitle')[0].innerText.charAt($('#PrimaryComplaintTitle')[0].innerText.length-1); 
 
@@ -233,6 +239,19 @@ function extractTimeFromTimelineElement(name, timelineElement){
 		return match[2];
 	} else { 
 		_cdlog('STARTEFORM: No ' + name + ' Time found: ' + innerText); 
+	} 
+	return '';
+}
+
+function extractCallTypeFromElement(primaryTypeElement) {
+	const CALLTYPE_PATTERN = /(.+)PRIORITY/g;
+	let innerText = primaryTypeElement.innerText;
+	let match = CALLTYPE_PATTERN.exec(innerText); 
+	if (match) { 
+		_cdlog('STARTEFORM: Found Call Type ' + match[1]); 
+		return match[1];
+	} else { 
+		_cdlog('STARTEFORM: No Call Type Found: ' + innerText); 
 	} 
 	return '';
 }
