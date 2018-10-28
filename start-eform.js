@@ -93,7 +93,7 @@ function buildEForm() {
 	vars['entry.2077619580'] = [s.slice(0, 4), s.slice(4,6), s.slice(6,8)].join('-'); 
 	
 	// Call Type
-	vars['entry.1655594278'] = extractCallTypeFromElement($('#PrimaryComplaintTitle')[0]); 
+	vars['entry.1655594278'] = extractCallTypeFromElement($('#PrimaryComplaintTitle')); 
 
 	// Outcome call type
 	vars['entry.624304548'] = vars['entry.1655594278'];
@@ -244,14 +244,14 @@ function extractTimeFromTimelineElement(name, timelineElement){
 }
 
 function extractCallTypeFromElement(primaryTypeElement) {
-	const CALLTYPE_PATTERN = /(.+)PRIORITY/g;
-	let innerText = primaryTypeElement.innerText;
-	let match = CALLTYPE_PATTERN.exec(innerText); 
+	const CALLTYPE_PATTERN = /(.+)<span/g;
+	let htmlContent = primaryTypeElement.html();
+	let match = CALLTYPE_PATTERN.exec(htmlContent); 
 	if (match) { 
 		_cdlog('STARTEFORM: Found Call Type ' + match[1]); 
 		return match[1];
 	} else { 
-		_cdlog('STARTEFORM: No Call Type Found: ' + innerText); 
+		_cdlog('STARTEFORM: No Call Type Found: ' + htmlContent); 
 	} 
 	return '';
 }
