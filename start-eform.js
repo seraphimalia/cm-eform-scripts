@@ -289,6 +289,17 @@ function addEFormButton() {
 		setTimeout(addEFormButton, 5000);
 	} else {
 		_cdlog('STARTEFORM: EForm Button Added');
+		setTimeout(doubleCheckEformButtonExists, 10000);
+	}
+}
+
+function doubleCheckEformButtonExists() {
+	if ($('#BuildEForm').length === 0) {
+		_cdlog('STARTEFORM: DOUBLECHECK EForm Button Does Not Exist, Running Add Button Procedure!');
+		setTimeout(addEFormButton, 5000);
+	} else {
+		_cdlog('STARTEFORM: DOUBLECHECK EForm Button Exists');
+		setTimeout(doubleCheckEformButtonExists, 10000);
 	}
 }
 
