@@ -5,7 +5,7 @@ entry.1014478975=Other&
 entry.1772041708=West+Metro+(WC,+CPT)&
 entry.1654195642=20123123/12&				-- $("#IncidentReference").html()
 entry.2077619580=2018-01-01&				-- var s = $("#IncidentReference").html().substring(0, $("#IncidentReference").html().indexOf('/')); [s.slice(0, 4), s.slice(4,6), s.slice(6,8)].join('-');
-entry.1655594278=Assault+-+Physical&
+entry.1655594278=Assault+-+Physical&		-- $("#PrimaryComplaintTitle")[0].innerText
 entry.1375744071=1&							-- $("#PrimaryComplaintTitle")[0].innerText.charAt($("#PrimaryComplaintTitle")[0].innerText.length-1)
 entry.393375178=RV01&
 entry.1725583490=No+Callsigns&
@@ -41,7 +41,7 @@ function _cdlog(text) {
 function getPRFs() {
 	var prfs = [];
 
-	var prfFormContainer = $('#ChecklistsContainer').find(`div[data-checklist-id]`);
+	var prfFormContainer = $('#ChecklistsContainer').find(`div[data-checklist-id]`).has(`label:contains('PRF Number')`).has(`label:contains('Triage')`);
 	if (prfFormContainer.length > 0) {
 		for (var i = 0; i < prfFormContainer.length; i++) {
 			if (prfFormContainer.find(`label:contains('PRF Number')`)[i].nextSibling.value.length > 0 && typeof prfFormContainer.find(`label:contains('Triage')`)[i] !== 'undefined') {
@@ -92,6 +92,12 @@ function buildEForm() {
 	var s = $('#IncidentReference').html().substring(0, $('#IncidentReference').html().indexOf('/')); 
 	vars['entry.2077619580'] = [s.slice(0, 4), s.slice(4,6), s.slice(6,8)].join('-'); 
 	
+	// Call Type
+	vars['entry.1655594278'] = extractCallTypeFromElement($('#PrimaryComplaintTitle')); 
+
+	// Outcome call type
+	vars['entry.624304548'] = vars['entry.1655594278'];
+
 	// Priority
 	vars['entry.1375744071'] = $('#PrimaryComplaintTitle')[0].innerText.charAt($('#PrimaryComplaintTitle')[0].innerText.length-1); 
 
@@ -237,6 +243,20 @@ function extractTimeFromTimelineElement(name, timelineElement){
 	return '';
 }
 
+function extractCallTypeFromElement(primaryTypeElement) {
+	const CALLTYPE_PATTERN = /(.+)<span/g;
+	let htmlContent = primaryTypeElement.html();
+	let match = CALLTYPE_PATTERN.exec(htmlContent); 
+	if (match) { 
+		const callType = unEntity(match[1]);
+		_cdlog('STARTEFORM: Found Call Type ' + callType); 
+		return callType;
+	} else { 
+		_cdlog('STARTEFORM: No Call Type Found: ' + htmlContent); 
+	} 
+	return '';
+}
+
 function extractCallsignFromTimelineElement(timelineElement){
 	const CALLSIGN_PATTERN = /([A-Z]{2}\d{2,3})[\D$]/g;
 	let innerText = timelineElement.innerText;
@@ -258,6 +278,10 @@ function findEarliestTimelineItem(timelineList1, timelineList2){
 	}
 }
 
+function unEntity(str){
+	return str.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+}
+
 function addEFormButton() {
 	$('<a class=\"btn btn-xs btn-default\" href=\"javascript:buildEForm();\" id=\"BuildEForm\">Start eForm</a>').insertAfter( '#ToggleStatus[data-statusid=1]' );
 	if ($('#BuildEForm').length === 0) {
@@ -265,6 +289,17 @@ function addEFormButton() {
 		setTimeout(addEFormButton, 5000);
 	} else {
 		_cdlog('STARTEFORM: EForm Button Added');
+		setTimeout(doubleCheckEformButtonExists, 10000);
+	}
+}
+
+function doubleCheckEformButtonExists() {
+	if ($('#BuildEForm').length === 0) {
+		_cdlog('STARTEFORM: DOUBLECHECK EForm Button Does Not Exist, Running Add Button Procedure!');
+		setTimeout(addEFormButton, 5000);
+	} else {
+		_cdlog('STARTEFORM: DOUBLECHECK EForm Button Exists');
+		setTimeout(doubleCheckEformButtonExists, 10000);
 	}
 }
 
