@@ -353,7 +353,7 @@ function extractCallTypeFromElement(primaryTypeElement) {
 }
 
 function extractCallsignFromTimelineElement(timelineElement) {
-  const CALLSIGN_PATTERN = /([A-Z]{2}\d{2,3})[\D$]/g;
+  const CALLSIGN_PATTERN = /([A-QS-Z][A-Z]\d{2,3})[\D$]/g;
   let innerText = timelineElement.innerText;
   let match = CALLSIGN_PATTERN.exec(innerText);
   if (match) {
