@@ -393,7 +393,7 @@ function findMetroReferenceNumber(){
 			_cdlog('STARTEFORM: No Metro Reference found: ' + innerText); 
 		} 
 	}
-	return undefined;
+	return 'None';
 }
 
 function unEntity(str) {
