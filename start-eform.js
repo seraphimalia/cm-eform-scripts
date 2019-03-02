@@ -346,6 +346,10 @@ function extractCallTypeFromElement(primaryTypeElement) {
     const callType = unEntity(match[1]);
     _cdlog("STARTEFORM: Found Call Type " + callType);
     return callType;
+  } else if (htmlContent.indexOf('<') === -1) {
+    const callType = unEntity(htmlContent);
+    _cdlog("STARTEFORM: Found Call Type " + callType);
+    return callType;
   } else {
     _cdlog("STARTEFORM: No Call Type Found: " + htmlContent);
   }
