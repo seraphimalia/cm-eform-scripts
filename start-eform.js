@@ -138,7 +138,7 @@ function buildEForm() {
   vars["entry.624304548"] = vars["entry.1655594278"];
 
   // Metro Reference Number
-  vars['entry.151097000'] = findMetroReferenceNumber();
+  vars["entry.151097000"] = findMetroReferenceNumber();
 
   // Priority
   vars["entry.1375744071"] = $("#PrimaryComplaintTitle")[0].innerText.charAt(
@@ -346,7 +346,7 @@ function extractCallTypeFromElement(primaryTypeElement) {
     const callType = unEntity(match[1]);
     _cdlog("STARTEFORM: Found Call Type " + callType);
     return callType;
-  } else if (htmlContent.indexOf('<') === -1) {
+  } else if (htmlContent.indexOf("<") === -1) {
     const callType = unEntity(htmlContent);
     _cdlog("STARTEFORM: Found Call Type " + callType);
     return callType;
@@ -380,20 +380,27 @@ function findEarliestTimelineItem(timelineList1, timelineList2) {
   }
 }
 
-function findMetroReferenceNumber(){
-	const METRO_REFERENCE_PATTERN = /DoH\ \-\ EMS\ \(Metro\)\ Ambulance\ Services.+(\d{4})/gi;
-	let notes = $('#NotesTable').find(`div.row:contains('DOH - EMS (METRO) AMBULANCE SERVICES')`);
-	for (let i = 0; i < notes.length; i++) {
-		let innerText = notes[i].innerText;
-		let match = METRO_REFERENCE_PATTERN.exec(innerText); 
-		if (match) { 
-			_cdlog('STARTEFORM: Found Metro Reference ' + match[1]); 
-			return match[1];
-		} else { 
-			_cdlog('STARTEFORM: No Metro Reference found: ' + innerText); 
-		} 
-	}
-	return 'None';
+function findMetroReferenceNumber() {
+  const METRO_REFERENCE_PATTERN = /DoH\ \-\ EMS\ \(Metro\)\ Ambulance\ Services.+(\d{4})/gi;
+  let notes = $("#NotesTable").find(
+    `div.row:contains('DOH - EMS (METRO) AMBULANCE SERVICES')`
+  );
+  if (notes.length === 0) {
+    notes = $("#NotesTable").find(
+      `div.row:contains('DoH - EMS (Metro) Ambulance Services')`
+    );
+  }
+  for (let i = 0; i < notes.length; i++) {
+    let innerText = notes[i].innerText;
+    let match = METRO_REFERENCE_PATTERN.exec(innerText);
+    if (match) {
+      _cdlog("STARTEFORM: Found Metro Reference " + match[1]);
+      return match[1];
+    } else {
+      _cdlog("STARTEFORM: No Metro Reference found: " + innerText);
+    }
+  }
+  return "None";
 }
 
 function unEntity(str) {
