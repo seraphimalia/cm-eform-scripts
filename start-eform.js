@@ -243,10 +243,12 @@ function buildEForm() {
       let pagedTimeline = $("#timeline").find(
         `div.panel:contains('Incident Paged Out')`
       );
-      vars["entry.915011561"] = extractTimeFromTimelineElement(
-        "paged",
-        pagedTimeline[pagedTimeline.length - 1]
-      );
+      if (pagedTimeline.length > 0) {
+        vars["entry.915011561"] = extractTimeFromTimelineElement(
+          "paged",
+          pagedTimeline[pagedTimeline.length - 1]
+        );
+      }
 
       const mobileTimelineAccepted = $("#timeline").find(
         `div.panel:contains(' - Accepted')`
