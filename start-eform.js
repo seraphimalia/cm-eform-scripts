@@ -90,14 +90,43 @@ function buildEForm() {
   var vars = {};
 
   // Source
-  if (
-    $("#DynamicListsContainer")
-      .find(`div[data-groupid='319']`)
-      .find(`label:contains('Call Source')`).length > 0
-  ) {
+  const sourceElementLength = $("#DynamicListsContainer")
+    .find(`div[data-groupid='319']`)
+    .find(`label:contains('Call Source')`).length;
+
+  if (sourceElementLength > 0) {
+    let indexSource = 0;
+    for (let i = 0; i < sourceElementLength; i++) {
+      const labelText = $("#DynamicListsContainer")
+        .find(`div[data-groupid='319']`)
+        .find(`label:contains('Call Source')`)[i].innerText;
+      if (labelText.toLowerCase() === "call source") {
+        indexSource = i;
+        break;
+      }
+    }
+
+    let indexSourceOther = 1;
+    for (let i = 0; i < sourceElementLength; i++) {
+      const labelText = $("#DynamicListsContainer")
+        .find(`div[data-groupid='319']`)
+        .find(`label:contains('Call Source')`)[i].innerText;
+      if (labelText.toLowerCase() === "call source other") {
+        indexSourceOther = i;
+        break;
+      }
+    }
+
     vars["entry.1261286527"] = $("#DynamicListsContainer")
       .find(`div[data-groupid='319']`)
-      .find(`label:contains('Call Source')`)[1].nextSibling.innerText;
+      .find(`label:contains('Call Source')`)[indexSource].nextSibling.innerText;
+
+    vars["entry.1014478975"] = $("#DynamicListsContainer")
+      .find(`div[data-groupid='319']`)
+      .find(`label:contains('Call Source')`)[
+      indexSourceOther
+    ].nextSibling.innerText;
+
     if (vars["entry.1261286527"] === "External Agency (DOH)") {
       vars["entry.1261286527"] = "External Agency (DoH)";
     }
