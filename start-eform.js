@@ -117,6 +117,8 @@ function buildEForm() {
       }
     }
 
+    vars["entry.1282291516"] = window.location.href
+
     vars["entry.1261286527"] = $("#DynamicListsContainer")
       .find(`div[data-groupid='319']`)
       .find(`label:contains('Call Source')`)[indexSource].nextSibling.innerText;
