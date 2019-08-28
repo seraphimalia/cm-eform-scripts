@@ -78,7 +78,6 @@ function getPRFs() {
   if (prfs.length === 0) {
     var prf = {};
     prf["entry.2108097200"] = "Unknown";
-    prf["entry.847941590"] = "No Patient";
     prf["entry.1646195359"] = -1;
     prf["entry.1552249109"] = "Unknown";
     prfs.push(prf);
@@ -242,33 +241,43 @@ function buildEForm() {
   // Close Reasons
   const closeReason = $("#closedReasonTitle").text()
   if (closeReason.substring(0, "patient refused".length).toLowerCase() === 'patient refused') {
-    prf["entry.162948545"] = "RHT"
+    vars["entry.162948545"] = "RHT" // Outcome
+    vars["entry.1807757148"] = "No Receiving Facility" // Destination Hospital
   } else if (closeReason.substring(0, "cancelled by".length).toLowerCase() === 'cancelled by') {
-    prf["entry.666285626"] = "No PRF, Cancelled by Caller or Referring Service"
-    prf["entry.162948545"] = "Cancelled by Caller or Referring Service"
-    prf["entry.2018139507"] = "No" // No Drugs
-    prf["entry.1842118913"] = "No" // No Mistakes
+    vars["entry.666285626"] = "No PRF, Cancelled by Caller or Referring Service"
+    vars["entry.162948545"] = "Cancelled by Caller or Referring Service" // Outcome
+    vars["entry.2018139507"] = "No" // No Drugs
+    vars["entry.1842118913"] = "No" // No Mistakes
+    vars["entry.847941590"] = "No Patient"; // Triage
+    vars["entry.1807757148"] = "No Receiving Facility" // Destination Hospital
   } else if (closeReason.toLowerCase() === 'conveyed By law enforcement/police') {
-    prf["entry.162948545"] = "SAPS"
+    vars["entry.162948545"] = "SAPS" // Outcome
   } else if (closeReason.toLowerCase() === 'conveyed By private transport') {
-    prf["entry.162948545"] = "Transported Privately"
+    vars["entry.162948545"] = "Transported Privately" // Outcome
   } else if (closeReason.toLowerCase() === 'declaration of death (doa)') {
-    prf["entry.162948545"] = "FPS/DOA"
+    vars["entry.162948545"] = "FPS/DOA"
+    vars["entry.1807757148"] = "No Receiving Facility" // Destination Hospital
   } else if (closeReason.toLowerCase() === 'nsr (no patient found)') {
-    prf["entry.666285626"] = "No PRF, No Patient Found"
-    prf["entry.162948545"] = "No Patient Found"
-    prf["entry.2018139507"] = "No" // No Drugs
-    prf["entry.1842118913"] = "No" // No Mistakes
+    vars["entry.666285626"] = "No PRF, No Patient Found"
+    vars["entry.162948545"] = "No Patient Found" // Outcome
+    vars["entry.2018139507"] = "No" // No Drugs
+    vars["entry.1842118913"] = "No" // No Mistakes
+    vars["entry.847941590"] = "No Patient"; // Triage
+    vars["entry.1807757148"] = "No Receiving Facility" // Destination Hospital
   } else if (closeReason.toLowerCase() === 'nsr (no scene found)') {
-    prf["entry.666285626"] = "No PRF, No Scene Found"
-    prf["entry.162948545"] = "No Scene Found"
-    prf["entry.2018139507"] = "No" // No Drugs
-    prf["entry.1842118913"] = "No" // No Mistakes
+    vars["entry.666285626"] = "No PRF, No Scene Found"
+    vars["entry.162948545"] = "No Scene Found" // Outcome
+    vars["entry.2018139507"] = "No" // No Drugs
+    vars["entry.1842118913"] = "No" // No Mistakes
+    vars["entry.847941590"] = "No Patient"; // Triage
+    vars["entry.1807757148"] = "No Receiving Facility" // Destination Hospital
   } else if (closeReason.toLowerCase() === 'Double Booking (Duplicated Call)') {
-    prf["entry.666285626"] = "No PRF, Duplicate Incident"
-    prf["entry.162948545"] = "Duplicate Incident"
-    prf["entry.2018139507"] = "No" // No Drugs
-    prf["entry.1842118913"] = "No" // No Mistakes
+    vars["entry.666285626"] = "No PRF, Duplicate Incident"
+    vars["entry.162948545"] = "Duplicate Incident" // Outcome
+    vars["entry.2018139507"] = "No" // No Drugs
+    vars["entry.1842118913"] = "No" // No Mistakes
+    vars["entry.847941590"] = "No Patient"; // Triage
+    vars["entry.1807757148"] = "No Receiving Facility" // Destination Hospital
   }
 
   var proceed = () => {
@@ -316,6 +325,7 @@ function buildEForm() {
         vars["entry.1842118913"] = "No" // No Mistakes
         vars["entry.27227789"] = "No" // No Induction
         vars["entry.1807757148"] = "Unknown" // Destination Hospital
+        vars["entry.847941590"] = "Unknown"; // Triage
       }
 
       let pagedTimeline = $("#timeline").find(
