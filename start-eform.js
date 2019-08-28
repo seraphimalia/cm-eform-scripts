@@ -81,16 +81,6 @@ function getPRFs() {
     prf["entry.847941590"] = "No Patient";
     prf["entry.1646195359"] = -1;
     prf["entry.1552249109"] = "Unknown";
-
-    // Check if incident is outsourced
-    const closeReason = $("#closedReasonTitle").text()
-    if (closeReason.substring(0, 10).toLowerCase() === 'outsourced') {
-      prf["entry.666285626"] = "No PRF, Incident Outsourced"
-      prf["entry.1883567358"] = "Yes"
-    } else {
-      prf["entry.1883567358"] = "No"
-    }
-
     prfs.push(prf);
   }
 
@@ -256,6 +246,8 @@ function buildEForm() {
   } else if (closeReason.substring(0, "cancelled by".length).toLowerCase() === 'cancelled by') {
     prf["entry.666285626"] = "No PRF, Cancelled by Caller or Referring Service"
     prf["entry.162948545"] = "Cancelled by Caller or Referring Service"
+    prf["entry.1883567358"] = "No" // No Drugs
+    prf["entry.1842118913"] = "No" // No Mistakes
   } else if (closeReason.toLowerCase() === 'conveyed By law enforcement/police') {
     prf["entry.162948545"] = "SAPS"
   } else if (closeReason.toLowerCase() === 'conveyed By private transport') {
@@ -265,12 +257,18 @@ function buildEForm() {
   } else if (closeReason.toLowerCase() === 'nsr (no patient found)') {
     prf["entry.666285626"] = "No PRF, No Patient Found"
     prf["entry.162948545"] = "No Patient Found"
+    prf["entry.1883567358"] = "No" // No Drugs
+    prf["entry.1842118913"] = "No" // No Mistakes
   } else if (closeReason.toLowerCase() === 'nsr (no scene found)') {
     prf["entry.666285626"] = "No PRF, No Scene Found"
     prf["entry.162948545"] = "No Scene Found"
+    prf["entry.1883567358"] = "No" // No Drugs
+    prf["entry.1842118913"] = "No" // No Mistakes
   } else if (closeReason.toLowerCase() === 'Double Booking (Duplicated Call)') {
     prf["entry.666285626"] = "No PRF, Duplicate Incident"
     prf["entry.162948545"] = "Duplicate Incident"
+    prf["entry.1883567358"] = "No" // No Drugs
+    prf["entry.1842118913"] = "No" // No Mistakes
   }
 
   var proceed = () => {
@@ -312,6 +310,12 @@ function buildEForm() {
       const closeReason = $("#closedReasonTitle").text()
       if (closeReason.substring(0, 10).toLowerCase() === 'outsourced') {
         vars["entry.835032369"] = vars["entry.524386880"]
+        vars["entry.666285626"] = "No PRF, Incident Outsourced"
+        vars["entry.1883567358"] = "Yes"
+        vars["entry.1883567358"] = "No" // No Drugs
+        vars["entry.1842118913"] = "No" // No Mistakes
+        vars["entry.27227789"] = "No" // No Induction
+        vars["entry.1807757148"] = "Unknown" // Destination Hospital
       }
 
       let pagedTimeline = $("#timeline").find(
