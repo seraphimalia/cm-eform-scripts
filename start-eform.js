@@ -212,7 +212,14 @@ function buildEForm() {
       _cdlog("STARTEFORM: " + i + ": Could not get Callsign");
     }
   }
-  vars["entry.1725583490"] = responders.join(",");
+  if (responders.length === 0) {
+    const closeReason = $("#closedReasonTitle").text()
+    if (closeReason.substring(0, 10).toLowerCase() === 'outsourced') {
+      vars["entry.1725583490"] = "None"
+    }
+  } else {
+    vars["entry.1725583490"] = responders.join(",");
+  }
 
   // Address
   vars["entry.895328514"] = $("#AddressLine").html();
