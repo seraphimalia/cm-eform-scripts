@@ -69,6 +69,7 @@ function getPRFs() {
         prf["entry.1552249109"] = prfFormContainer.find(
           `label:contains('Patient Ethnic Group')`
         )[i].nextSibling.value;
+        prf["entry.1883567358"] = "No"
         prfs.push(prf);
       }
     }
@@ -80,7 +81,16 @@ function getPRFs() {
     prf["entry.847941590"] = "No Patient";
     prf["entry.1646195359"] = -1;
     prf["entry.1552249109"] = "Unknown";
-    prf["entry.1883567358"] = "No"
+
+    // Check if incident is outsourced
+    const closeReason = $("#closedReasonTitle").text()
+    if (closeReason.substring(0, 10).toLowerCase() === 'outsourced') {
+      prf["entry.666285626"] = "No PRF, Incident Outsourced"
+      prf["entry.1883567358"] = "Yes"
+    } else {
+      prf["entry.1883567358"] = "No"
+    }
+
     prfs.push(prf);
   }
 
@@ -230,6 +240,30 @@ function buildEForm() {
     }
   } else {
     _cdlog("STARTEFORM: Ignoring first on scene because an RV was assigned.");
+  }
+
+  // Close Reasons
+  const closeReason = $("#closedReasonTitle").text()
+  if (closeReason.substring(0, "patient refused".length).toLowerCase() === 'patient refused') {
+    prf["entry.162948545"] = "RHT"
+  } else if (closeReason.substring(0, "cancelled by".length).toLowerCase() === 'cancelled by') {
+    prf["entry.666285626"] = "No PRF, Cancelled by Caller or Referring Service"
+    prf["entry.162948545"] = "Cancelled by Caller or Referring Service"
+  } else if (closeReason.toLowerCase() === 'conveyed By law enforcement/police') {
+    prf["entry.162948545"] = "SAPS"
+  } else if (closeReason.toLowerCase() === 'conveyed By private transport') {
+    prf["entry.162948545"] = "Transported Privately"
+  } else if (closeReason.toLowerCase() === 'declaration of death (doa)') {
+    prf["entry.162948545"] = "FPS/DOA"
+  } else if (closeReason.toLowerCase() === 'nsr (no patient found)') {
+    prf["entry.666285626"] = "No PRF, No Patient Found"
+    prf["entry.162948545"] = "No Patient Found"
+  } else if (closeReason.toLowerCase() === 'nsr (no scene found)') {
+    prf["entry.666285626"] = "No PRF, No Scene Found"
+    prf["entry.162948545"] = "No Scene Found"
+  } else if (closeReason.toLowerCase() === 'Double Booking (Duplicated Call)') {
+    prf["entry.666285626"] = "No PRF, Duplicate Incident"
+    prf["entry.162948545"] = "Duplicate Incident"
   }
 
   var proceed = () => {
