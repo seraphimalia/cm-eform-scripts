@@ -51,7 +51,7 @@ function getPRFs() {
         prfFormContainer.find(`label:contains('PRF Number')`)[i].nextSibling
           .value.length > 0 &&
         typeof prfFormContainer.find(`label:contains('Triage')`)[i] !==
-          "undefined"
+        "undefined"
       ) {
         var prf = {};
         prf["entry.666285626"] = prfFormContainer.find(
@@ -80,6 +80,7 @@ function getPRFs() {
     prf["entry.847941590"] = "No Patient";
     prf["entry.1646195359"] = -1;
     prf["entry.1552249109"] = "Unknown";
+    prf["entry.1883567358"] = "No"
     prfs.push(prf);
   }
 
@@ -240,7 +241,7 @@ function buildEForm() {
       const allVars = Object.assign({}, vars, prfs[i]);
       _cdlog(allVars);
       var queryString = Object.keys(allVars)
-        .map(function(key) {
+        .map(function (key) {
           return key + "=" + encodeURIComponent(allVars[key]);
         })
         .join("&");
@@ -266,10 +267,7 @@ function buildEForm() {
       proceed();
     },
     () => {
-      var incidentTimeStr = $("#ScheduleDateTime").html();
-      var incidentSplit = incidentTimeStr.split(" ");
-      var timeStr = incidentSplit[1];
-      vars["entry.524386880"] = timeStr;
+      vars["entry.524386880"] = findIncidentTime();
 
       let pagedTimeline = $("#timeline").find(
         `div.panel:contains('Incident Paged Out')`
@@ -436,6 +434,39 @@ function findMetroReferenceNumber() {
   return "None";
 }
 
+function findIncidentTime() {
+  const INCIDENTTIME_PATTERN = /(^|\W)((I\W?T)|(Incident\s+Time))\W.+?(\d{2}:\d{2})/gi;
+  const PATTERN_GROUP = 5;
+
+  // FIRST CHECK DESCRIPTION
+  const descriptionText = $("#Description").text()
+
+  const matchDescription = INCIDENTTIME_PATTERN.exec(descriptionText);
+  if (matchDescription) {
+    _cdlog("STARTEFORM: Found Incident Time in Description " + matchDescription[PATTERN_GROUP]);
+    return matchDescription[PATTERN_GROUP];
+  }
+
+  const notes = $("#NotesTable").find("div >> p");
+
+  for (let i = notes.length - 1; i >= 0; i--) {
+    const innerText = notes[i].innerText;
+    const match = INCIDENTTIME_PATTERN.exec(innerText);
+    if (match) {
+      _cdlog("STARTEFORM: Found Metro Reference " + match[PATTERN_GROUP]);
+      return match[PATTERN_GROUP];
+    } else {
+      _cdlog("STARTEFORM: No Metro Reference found: " + innerText);
+    }
+  }
+
+  const incidentTimeStr = $("#ScheduleDateTime").html();
+  const incidentSplit = incidentTimeStr.split(" ");
+  const timeStr = incidentSplit[1];
+
+  return timeStr;
+}
+
 function unEntity(str) {
   return str
     .replace(/&amp;/g, "&")
@@ -492,8 +523,8 @@ function appendEformDialog(message) {
 					<div class="row"> \
 						<div class="col-md-12"> \
 							<p>' +
-      message +
-      '?</p> \
+    message +
+    '?</p> \
 						</div> \
 					</div> \
 				</div> \
@@ -517,11 +548,11 @@ function destroyEformDialog() {
 
 function ConfirmDialog(message, yesCallback, noCallback) {
   appendEformDialog(message);
-  $("#eFormDialogYes").click(function() {
+  $("#eFormDialogYes").click(function () {
     yesCallback();
     destroyEformDialog();
   });
-  $("#eFormDialogNo").click(function() {
+  $("#eFormDialogNo").click(function () {
     noCallback();
     destroyEformDialog();
   });
