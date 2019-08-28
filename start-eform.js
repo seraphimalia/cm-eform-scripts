@@ -311,7 +311,7 @@ function buildEForm() {
       vars["entry.524386880"] = findIncidentTime();
       const closeReason = $("#closedReasonTitle").text()
       if (closeReason.substring(0, 10).toLowerCase() === 'outsourced') {
-        prf["entry.835032369"] = vars["entry.524386880"]
+        vars["entry.835032369"] = vars["entry.524386880"]
       }
 
       let pagedTimeline = $("#timeline").find(
