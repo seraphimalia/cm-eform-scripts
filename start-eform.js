@@ -545,6 +545,9 @@ function addEFormButton() {
       _cdlog("STARTEFORM: EForm Button Added");
       setTimeout(doubleCheckEformButtonExists, 10000);
     }
+  } else {
+    _cdlog("STARTEFORM: Incident not closed, Checking again Later!");
+    setTimeout(addEFormButton, 5000);
   }
 }
 
