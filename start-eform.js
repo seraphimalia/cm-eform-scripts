@@ -534,15 +534,17 @@ function unEntity(str) {
 }
 
 function addEFormButton() {
-  $(
-    '<a class="btn btn-xs btn-default" href="javascript:buildEForm();" id="BuildEForm">Start eForm</a>'
-  ).insertAfter("#ToggleStatus[data-statusid=1]");
-  if ($("#BuildEForm").length === 0) {
-    _cdlog("STARTEFORM: EForm Button Not Added, Trying again Later!");
-    setTimeout(addEFormButton, 5000);
-  } else {
-    _cdlog("STARTEFORM: EForm Button Added");
-    setTimeout(doubleCheckEformButtonExists, 10000);
+  if ($("#ToggleStatus[data-statusid=1]").length > 0) {
+    $(
+      '<span id="StartEformMenu"><a class="btn btn-xs btn-default" href="javascript:buildEForm();" id="BuildEForm">Start eForm</a></span>'
+    ).insertAfter("#ActiveOrderMenu");
+    if ($("#BuildEForm").length === 0) {
+      _cdlog("STARTEFORM: EForm Button Not Added, Trying again Later!");
+      setTimeout(addEFormButton, 5000);
+    } else {
+      _cdlog("STARTEFORM: EForm Button Added");
+      setTimeout(doubleCheckEformButtonExists, 10000);
+    }
   }
 }
 
