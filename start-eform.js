@@ -147,19 +147,6 @@ function buildEForm() {
   // Incident Number
   vars["entry.1654195642"] = $("#IncidentReference").html();
 
-  // Incident Date
-  var s = $("#IncidentReference")
-    .html()
-    .substring(
-      0,
-      $("#IncidentReference")
-        .html()
-        .indexOf("/")
-    );
-  vars["entry.2077619580"] = [s.slice(0, 4), s.slice(4, 6), s.slice(6, 8)].join(
-    "-"
-  );
-
   // Call Type
   vars["entry.1655594278"] = extractCallTypeFromElement(
     $("#PrimaryComplaintTitle")
@@ -315,6 +302,19 @@ function buildEForm() {
       proceed();
     },
     () => {
+      // Incident Date
+      var s = $("#IncidentReference")
+        .html()
+        .substring(
+          0,
+          $("#IncidentReference")
+            .html()
+            .indexOf("/")
+        );
+      vars["entry.2077619580"] = [s.slice(0, 4), s.slice(4, 6), s.slice(6, 8)].join(
+        "-"
+      );
+
       vars["entry.524386880"] = findIncidentTime();
       const closeReason = $("#closedReasonTitle").text()
       if (closeReason.substring(0, 10).toLowerCase() === 'outsourced') {
