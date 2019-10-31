@@ -32,13 +32,13 @@ entry.867510255=Non-billable&
 entry.1807757148=Government+Facility&
 entry.162948545=Resq-Medix
 */
-function _cdlog(text) {
+function _cdlog (text) {
   if (document.location.href.indexOf("cdinjector-debug=true") !== -1) {
     console.log(text);
   }
 }
 
-function getPRFs() {
+function getPRFs () {
   var prfs = [];
 
   var prfFormContainer = $("#ChecklistsContainer")
@@ -86,7 +86,7 @@ function getPRFs() {
   return prfs;
 }
 
-function buildEForm() {
+function buildEForm () {
   var vars = {};
 
   // Source
@@ -383,14 +383,14 @@ function buildEForm() {
   );
 }
 
-function isResponseVehicleAssigned() {
+function isResponseVehicleAssigned () {
   const mobileTimelineAccepted = $("#timeline").find(
     `div.panel:contains(' - Accepted')`
   );
   return mobileTimelineAccepted.length > 0;
 }
 
-function determineCallsignVehicle(callsign) {
+function determineCallsignVehicle (callsign) {
   // WIP
   // let vehicles = $("#ActiveVehiclesPane").find(`div[data-type='Vehicle']`);
   // for (let i = 0; i < vehicles.length; i++) {
@@ -415,7 +415,7 @@ function determineCallsignVehicle(callsign) {
   }
 }
 
-function extractTimeFromTimelineElement(name, timelineElement) {
+function extractTimeFromTimelineElement (name, timelineElement) {
   const TIME_PATTERN = /(\d{4}-\d{2}-\d{2})?\D+(\d{2}:\d{2})/g;
   let innerText = timelineElement.innerText;
   let match = TIME_PATTERN.exec(innerText);
@@ -428,7 +428,7 @@ function extractTimeFromTimelineElement(name, timelineElement) {
   return "";
 }
 
-function extractCallTypeFromElement(primaryTypeElement) {
+function extractCallTypeFromElement (primaryTypeElement) {
   const CALLTYPE_PATTERN = /(.+)<span/g;
   let htmlContent = primaryTypeElement.html();
   let match = CALLTYPE_PATTERN.exec(htmlContent);
@@ -446,7 +446,7 @@ function extractCallTypeFromElement(primaryTypeElement) {
   return "";
 }
 
-function extractCallsignFromTimelineElement(timelineElement) {
+function extractCallsignFromTimelineElement (timelineElement) {
   const CALLSIGN_PATTERN = /([A-QS-Z][A-Z]\d{2,3})[\D$]/g;
   let innerText = timelineElement.innerText;
   let match = CALLSIGN_PATTERN.exec(innerText);
@@ -459,7 +459,7 @@ function extractCallsignFromTimelineElement(timelineElement) {
   return undefined;
 }
 
-function findEarliestTimelineItem(timelineList1, timelineList2) {
+function findEarliestTimelineItem (timelineList1, timelineList2) {
   if (
     timelineList1[timelineList1.length - 1].offsetTop >
     timelineList2[timelineList2.length - 1].offsetTop
@@ -470,7 +470,7 @@ function findEarliestTimelineItem(timelineList1, timelineList2) {
   }
 }
 
-function findMetroReferenceNumber() {
+function findMetroReferenceNumber () {
   const METRO_REFERENCE_PATTERN = /DoH\ \-\ EMS\ \(Metro\)\ Ambulance\ Services.+(\d{4})/gi;
   let notes = $("#NotesTable").find(
     `div.row:contains('DOH - EMS (METRO) AMBULANCE SERVICES')`
@@ -493,8 +493,8 @@ function findMetroReferenceNumber() {
   return "None";
 }
 
-function findIncidentTime() {
-  const INCIDENTTIME_PATTERN = /(^|\W)((I\W?T)|(Incident\s+Time))\W.+?(\d{2}:\d{2})/gi;
+function findIncidentTime () {
+  const INCIDENTTIME_PATTERN = /(^|\W)((I\W?T)|(Incident\s+Time))\W.+?(\d{2}[:h]\d{2})/gi;
   const PATTERN_GROUP = 5;
 
   // FIRST CHECK DESCRIPTION
@@ -512,8 +512,9 @@ function findIncidentTime() {
     const innerText = notes[i].innerText;
     const match = INCIDENTTIME_PATTERN.exec(innerText);
     if (match) {
-      _cdlog("STARTEFORM: Found Metro Reference " + match[PATTERN_GROUP]);
-      return match[PATTERN_GROUP];
+      const incidentTime = match[PATTERN_GROUP].replace('h', ':')
+      _cdlog("STARTEFORM: Found Metro Reference " + incidentTime);
+      return incidentTime;
     } else {
       _cdlog("STARTEFORM: No Metro Reference found: " + innerText);
     }
@@ -526,14 +527,14 @@ function findIncidentTime() {
   return timeStr;
 }
 
-function unEntity(str) {
+function unEntity (str) {
   return str
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">");
 }
 
-function addEFormButton() {
+function addEFormButton () {
   if ($("#ToggleStatus[data-statusid=1]").length > 0) {
     $(
       '<span id="StartEformMenu"><a class="btn btn-xs btn-default" href="javascript:buildEForm();" id="BuildEForm">Start eForm</a></span>'
@@ -551,7 +552,7 @@ function addEFormButton() {
   }
 }
 
-function doubleCheckEformButtonExists() {
+function doubleCheckEformButtonExists () {
   if ($("#BuildEForm").length === 0) {
     _cdlog(
       "STARTEFORM: DOUBLECHECK EForm Button Does Not Exist, Running Add Button Procedure!"
@@ -563,7 +564,7 @@ function doubleCheckEformButtonExists() {
   }
 }
 
-function revealScheduledDate() {
+function revealScheduledDate () {
   if ($("#ScheduleDateContainer").length > 0) {
     $("#ScheduleDateContainer").show();
   } else {
@@ -571,7 +572,7 @@ function revealScheduledDate() {
   }
 }
 
-function appendEformDialog(message) {
+function appendEformDialog (message) {
   $(
     '<div class="modal stick-up in" id="eFormYesNoDialog" style="display: none;"> \
 		<div class="modal-dialog"> \
@@ -602,15 +603,15 @@ function appendEformDialog(message) {
   ).appendTo("body");
 }
 
-function showEformDialog() {
+function showEformDialog () {
   $("#eFormYesNoDialog").show();
 }
 
-function destroyEformDialog() {
+function destroyEformDialog () {
   $("#eFormYesNoDialog").remove();
 }
 
-function ConfirmDialog(message, yesCallback, noCallback) {
+function ConfirmDialog (message, yesCallback, noCallback) {
   appendEformDialog(message);
   $("#eFormDialogYes").click(function () {
     yesCallback();
