@@ -316,17 +316,7 @@ function buildEForm () {
 
   const whenNo = () => {
     // Incident Date
-    var s = $("#IncidentReference")
-      .html()
-      .substring(
-        0,
-        $("#IncidentReference")
-          .html()
-          .indexOf("/")
-      );
-    vars["entry.2077619580"] = [s.slice(0, 4), s.slice(4, 6), s.slice(6, 8)].join(
-      "-"
-    );
+    vars["entry.2077619580"] = incidentDateFromReference()
 
     let pagedTimeline = $("#timeline").find(
       `div.panel:contains('Incident Paged Out')`
@@ -511,6 +501,19 @@ function findIncidentDate () {
     return [s.slice(0, 4), s.slice(4, 6), s.slice(6, 8)].join("-");
   }
   return
+}
+
+function incidentDateFromReference () {
+  var s = $("#IncidentReference")
+    .html()
+    .substring(
+      0,
+      $("#IncidentReference")
+        .html()
+        .indexOf("/")
+    );
+  return [s.slice(0, 4), s.slice(4, 6), s.slice(6, 8)].join("-");
+
 }
 
 function findIncidentTime () {
