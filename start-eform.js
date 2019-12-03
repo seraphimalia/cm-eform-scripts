@@ -271,7 +271,8 @@ function buildEForm () {
     vars["entry.524386880"] = findIncidentTime();
     const closeReason = $("#closedReasonTitle").text()
     if (closeReason.substring(0, 10).toLowerCase() === 'outsourced') {
-      vars["entry.835032369"] = vars["entry.524386880"]
+      vars["entry.915011561"] = vars["entry.524386880"] // Paged Time
+      vars["entry.835032369"] = vars["entry.524386880"] // Free Time
       vars["entry.666285626"] = "No PRF, Incident Outsourced"
       vars["entry.1883567358"] = "Yes"
       vars["entry.2018139507"] = "No" // No Drugs
