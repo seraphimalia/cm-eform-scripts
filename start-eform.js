@@ -268,6 +268,19 @@ function buildEForm () {
   }
 
   var proceed = () => {
+    vars["entry.524386880"] = findIncidentTime();
+    const closeReason = $("#closedReasonTitle").text()
+    if (closeReason.substring(0, 10).toLowerCase() === 'outsourced') {
+      vars["entry.835032369"] = vars["entry.524386880"]
+      vars["entry.666285626"] = "No PRF, Incident Outsourced"
+      vars["entry.1883567358"] = "Yes"
+      vars["entry.2018139507"] = "No" // No Drugs
+      vars["entry.1842118913"] = "No" // No Mistakes
+      vars["entry.27227789"] = "No" // No Induction
+      vars["entry.1807757148"] = "Unknown" // Destination Hospital
+      vars["entry.847941590"] = "Unknown"; // Triage
+    }
+
     revealScheduledDate();
 
     var prfs = getPRFs();
@@ -295,92 +308,86 @@ function buildEForm () {
     }
   };
 
-  // Get Times if it is not a backlogged incident
-  ConfirmDialog(
-    "Is this a backlogged incident?",
-    () => {
-      proceed();
-    },
-    () => {
-      // Incident Date
-      var s = $("#IncidentReference")
-        .html()
-        .substring(
-          0,
-          $("#IncidentReference")
-            .html()
-            .indexOf("/")
-        );
-      vars["entry.2077619580"] = [s.slice(0, 4), s.slice(4, 6), s.slice(6, 8)].join(
-        "-"
+  const whenYes = () => {
+    // Incident Date
+    vars["entry.2077619580"] = findIncidentDate()
+    proceed();
+  }
+
+  const whenNo = () => {
+    // Incident Date
+    var s = $("#IncidentReference")
+      .html()
+      .substring(
+        0,
+        $("#IncidentReference")
+          .html()
+          .indexOf("/")
       );
+    vars["entry.2077619580"] = [s.slice(0, 4), s.slice(4, 6), s.slice(6, 8)].join(
+      "-"
+    );
 
-      vars["entry.524386880"] = findIncidentTime();
-      const closeReason = $("#closedReasonTitle").text()
-      if (closeReason.substring(0, 10).toLowerCase() === 'outsourced') {
-        vars["entry.835032369"] = vars["entry.524386880"]
-        vars["entry.666285626"] = "No PRF, Incident Outsourced"
-        vars["entry.1883567358"] = "Yes"
-        vars["entry.2018139507"] = "No" // No Drugs
-        vars["entry.1842118913"] = "No" // No Mistakes
-        vars["entry.27227789"] = "No" // No Induction
-        vars["entry.1807757148"] = "Unknown" // Destination Hospital
-        vars["entry.847941590"] = "Unknown"; // Triage
-      }
-
-      let pagedTimeline = $("#timeline").find(
-        `div.panel:contains('Incident Paged Out')`
+    let pagedTimeline = $("#timeline").find(
+      `div.panel:contains('Incident Paged Out')`
+    );
+    if (pagedTimeline.length > 0) {
+      vars["entry.915011561"] = extractTimeFromTimelineElement(
+        "paged",
+        pagedTimeline[pagedTimeline.length - 1]
       );
-      if (pagedTimeline.length > 0) {
-        vars["entry.915011561"] = extractTimeFromTimelineElement(
-          "paged",
-          pagedTimeline[pagedTimeline.length - 1]
-        );
-      }
-
-      const mobileTimelineAccepted = $("#timeline").find(
-        `div.panel:contains(' - Accepted')`
-      );
-      const mobileTimelineEnRoute = $("#timeline").find(
-        `div.panel:contains(' - Enroute')`
-      );
-      let mobileTimeline;
-      if (mobileTimelineAccepted.length === 0) {
-        mobileTimeline = mobileTimelineEnRoute;
-      } else if (mobileTimelineEnRoute.length === 0) {
-        mobileTimeline = mobileTimelineAccepted;
-      } else {
-        mobileTimeline = findEarliestTimelineItem(
-          mobileTimelineAccepted,
-          mobileTimelineEnRoute
-        );
-      }
-      if (mobileTimeline.length > 0) {
-        vars["entry.295402896"] = extractTimeFromTimelineElement(
-          "mobile",
-          mobileTimeline[mobileTimeline.length - 1]
-        );
-      } else {
-        _cdlog("STARTEFORM: There was no history for Mobile Time");
-      }
-
-      let onSceneTimeline = $("#timeline").find(
-        `div.panel:contains(' - On Scene')`
-      );
-      if (onSceneTimeline.length > 0) {
-        vars["entry.865471720"] = extractTimeFromTimelineElement(
-          "on scene",
-          onSceneTimeline[onSceneTimeline.length - 1]
-        );
-      } else {
-        _cdlog("STARTEFORM: There was no history for On Scene Time");
-      }
-
-      alert("REMEMBER TO DOUBLE CHECK THE TIMES!!!");
-
-      proceed();
     }
-  );
+
+    const mobileTimelineAccepted = $("#timeline").find(
+      `div.panel:contains(' - Accepted')`
+    );
+    const mobileTimelineEnRoute = $("#timeline").find(
+      `div.panel:contains(' - Enroute')`
+    );
+    let mobileTimeline;
+    if (mobileTimelineAccepted.length === 0) {
+      mobileTimeline = mobileTimelineEnRoute;
+    } else if (mobileTimelineEnRoute.length === 0) {
+      mobileTimeline = mobileTimelineAccepted;
+    } else {
+      mobileTimeline = findEarliestTimelineItem(
+        mobileTimelineAccepted,
+        mobileTimelineEnRoute
+      );
+    }
+    if (mobileTimeline.length > 0) {
+      vars["entry.295402896"] = extractTimeFromTimelineElement(
+        "mobile",
+        mobileTimeline[mobileTimeline.length - 1]
+      );
+    } else {
+      _cdlog("STARTEFORM: There was no history for Mobile Time");
+    }
+
+    let onSceneTimeline = $("#timeline").find(
+      `div.panel:contains(' - On Scene')`
+    );
+    if (onSceneTimeline.length > 0) {
+      vars["entry.865471720"] = extractTimeFromTimelineElement(
+        "on scene",
+        onSceneTimeline[onSceneTimeline.length - 1]
+      );
+    } else {
+      _cdlog("STARTEFORM: There was no history for On Scene Time");
+    }
+
+    alert("REMEMBER TO DOUBLE CHECK THE TIMES!!!");
+
+    proceed();
+  }
+
+  // Get Times if it is not a backlogged incident
+  const descriptionText = $("#Description").text()
+  if (descriptionText.indexOf('BACKLOG') >= 0) {
+    whenYes()
+  } else {
+    ConfirmDialog("Is this a backlogged incident?", whenYes, whenNo);
+  }
 }
 
 function isResponseVehicleAssigned () {
@@ -491,6 +498,19 @@ function findMetroReferenceNumber () {
     }
   }
   return "None";
+}
+
+function findIncidentDate () {
+  const descriptionText = $("#Description").text()
+  const MATCH_DATE_PATTERN = /BACKLOG.+(20\d{2}((0[1-9])|(1[0-2]))(([0-2][0-9])|(3[0-1])))/
+  const PATTERN_GROUP = 1
+
+  const match = MATCH_DATE_PATTERN.exec(descriptionText);
+  if (match) {
+    const s = match[PATTERN_GROUP]
+    return [s.slice(0, 4), s.slice(4, 6), s.slice(6, 8)].join("-");
+  }
+  return
 }
 
 function findIncidentTime () {
