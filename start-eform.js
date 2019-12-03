@@ -311,6 +311,7 @@ function buildEForm () {
   const whenYes = () => {
     // Incident Date
     vars["entry.2077619580"] = findIncidentDate()
+    vars["entry.915011561"] = findIncidentTime()
     proceed();
   }
 
