@@ -676,8 +676,8 @@ addEFormButton();
 // POST INCIDENT NUMBER & URL
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-function postIncidentNumberWithUrl (incidentNumber, Url) {
-  var serializedData = `IncidentNumber=${encodeURIComponent(incidentNumber)}&URL=${encodeURIComponent(Url)}`
+function postIncidentNumberWithUrl (incidentNumber, Url, createdPerson) {
+  var serializedData = `action=add&IncidentNumber=${encodeURIComponent(incidentNumber)}&URL=${encodeURIComponent(Url)}&CreatedPerson=${encodeURIComponent(createdPerson)}`
 
   var url = "https://script.google.com/macros/s/AKfycbyr-ScTDersx1PD1rd5qcqy1_uJ7sZ_J_SLXwsd8HDbWXX9bZs/exec?" + serializedData + "&callback=?";
   $.getJSON(url)
@@ -687,11 +687,41 @@ function waitForLoadAndPost () {
   if ($("#ToggleStatus[data-statusid=2]").length > 0) {
     var incidentNumber = $("#IncidentReference").html()
     var Url = window.location.href
+    var createdPerson = $(".profile-dropdown-toggle").text().trim()
 
-    postIncidentNumberWithUrl(incidentNumber, Url)
+    postIncidentNumberWithUrl(incidentNumber, Url, createdPerson)
   } else {
     setTimeout(waitForLoadAndPost, 5000);
   }
 }
 
 waitForLoadAndPost()
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// HOOK INTO CLOSE BUTTON
+//////////////////////////////////////////////////////////////////////////////////////////////
+$('input[type="checkbox"]').attr("checked", "checked");
+
+function closeHandler () {
+  var incidentNumber = $("#IncidentReference").html()
+  var dispatcher = $(".profile-dropdown-toggle").text().trim()
+  var serializedData = `action=close&IncidentNumber=${encodeURIComponent(incidentNumber)}&dispatcher=${encodeURIComponent(dispatcher)}`
+
+  var url = "https://script.google.com/macros/s/AKfycbyr-ScTDersx1PD1rd5qcqy1_uJ7sZ_J_SLXwsd8HDbWXX9bZs/exec?" + serializedData + "&callback=?";
+  $.getJSON(url)
+}
+
+function checkAndHookIntoCloseButton () {
+  if ($("#ToggleStatus[data-statusid=2]").length > 0) {
+    var hookEnabled = $("#ToggleStatus").attr('hooked')
+    if (!hooked) {
+      $("#ToggleStatus").click(closeHandler)
+      $("#ToggleStatus").attr('hooked', true)
+    }
+  }
+
+  setTimeout(checkAndHookIntoCloseButton, 5000);
+}
+
+checkAndHookIntoCloseButton()
