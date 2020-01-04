@@ -394,8 +394,8 @@ function buildEForm () {
   }
 
   // Get Times if it is not a backlogged incident
-  const descriptionText = $("#Description").text()
-  if (descriptionText.indexOf('BACKLOG') >= 0) {
+  const descriptionText = $("#Description").text().toLowerCase()
+  if (descriptionText.indexOf('backlog') >= 0) {
     whenYes()
   } else {
     ConfirmDialog("Is this a backlogged incident?", whenYes, whenNo);
