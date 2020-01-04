@@ -71,7 +71,7 @@ function getRHTContainer () {
 function processPRFs (prfFormContainer, isRHT) {
   var prfs = [];
 
-  var numberField = (isRHT ? 'PRF Number' : 'RHT Number')
+  var numberField = (isRHT ? 'RHT Number' : 'PRF Number')
 
   if (prfFormContainer.length > 0) {
     for (var i = 0; i < prfFormContainer.length; i++) {
