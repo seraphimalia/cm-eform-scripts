@@ -671,3 +671,27 @@ function ConfirmDialog (message, yesCallback, noCallback) {
 }
 
 addEFormButton();
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// POST INCIDENT NUMBER & URL
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+function postIncidentNumberWithUrl (incidentNumber, Url) {
+  var serializedData = `IncidentNumber=${encodeURIComponent(incidentNumber)}&URL=${encodeURIComponent(Url)}`
+
+  var url = "https://script.google.com/a/communitymedics.org.za/macros/s/AKfycbyr-ScTDersx1PD1rd5qcqy1_uJ7sZ_J_SLXwsd8HDbWXX9bZs/exec?" + serializedData + "&callback=?";
+  $.getJSON(url)
+}
+
+function waitForLoadAndPost () {
+  if ($("#ToggleStatus[data-statusid=2]").length > 0) {
+    var incidentNumber = $("#IncidentReference").html()
+    var Url = window.location.href
+
+    postIncidentNumberWithUrl(incidentNumber, Url)
+  } else {
+    setTimeout(waitForLoadAndPost, 5000);
+  }
+}
+
+waitForLoadAndPost()
