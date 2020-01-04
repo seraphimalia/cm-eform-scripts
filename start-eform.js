@@ -39,12 +39,38 @@ function _cdlog (text) {
 }
 
 function getPRFs () {
-  var prfs = [];
+  var prfs = processPRFs(getPRFContainer(), 'PRF Number');
 
-  var prfFormContainer = $("#ChecklistsContainer")
+  var rhts = processPRFs(getRHTContainer(), 'RHT Number');
+
+  if (prfs.length === 0 && rhts.length === 0) {
+    var prf = {};
+    prf["entry.2108097200"] = "Unknown";
+    prf["entry.1646195359"] = -1;
+    prf["entry.1552249109"] = "Unknown";
+    return [prf];
+  }
+
+  return [...prfs, ...rhts]
+}
+
+function getPRFContainer () {
+  return $("#ChecklistsContainer")
     .find(`div[data-checklist-id]`)
     .has(`label:contains('PRF Number')`)
     .has(`label:contains('Triage')`);
+}
+
+function getRHTContainer () {
+  return $("#ChecklistsContainer")
+    .find(`div[data-checklist-id]`)
+    .has(`label:contains('RHT Number')`)
+    .has(`label:contains('Triage')`);
+}
+
+function processPRFs (prfFormContainer, numberField) {
+  var prfs = [];
+
   if (prfFormContainer.length > 0) {
     for (var i = 0; i < prfFormContainer.length; i++) {
       if (
@@ -55,7 +81,7 @@ function getPRFs () {
       ) {
         var prf = {};
         prf["entry.666285626"] = prfFormContainer.find(
-          `label:contains('PRF Number')`
+          `label:contains('${numberField}')`
         )[i].nextSibling.value;
         prf["entry.2108097200"] = prfFormContainer.find(
           `label:contains('Triage')`
@@ -73,14 +99,6 @@ function getPRFs () {
         prfs.push(prf);
       }
     }
-  }
-
-  if (prfs.length === 0) {
-    var prf = {};
-    prf["entry.2108097200"] = "Unknown";
-    prf["entry.1646195359"] = -1;
-    prf["entry.1552249109"] = "Unknown";
-    prfs.push(prf);
   }
 
   return prfs;
