@@ -679,7 +679,7 @@ addEFormButton();
 function postIncidentNumberWithUrl (incidentNumber, Url) {
   var serializedData = `IncidentNumber=${encodeURIComponent(incidentNumber)}&URL=${encodeURIComponent(Url)}`
 
-  var url = "https://script.google.com/a/communitymedics.org.za/macros/s/AKfycbyr-ScTDersx1PD1rd5qcqy1_uJ7sZ_J_SLXwsd8HDbWXX9bZs/exec?" + serializedData + "&callback=?";
+  var url = "https://script.google.com/macros/s/AKfycbyr-ScTDersx1PD1rd5qcqy1_uJ7sZ_J_SLXwsd8HDbWXX9bZs/exec?" + serializedData + "&callback=?";
   $.getJSON(url)
 }
 
