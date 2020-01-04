@@ -726,7 +726,7 @@ function checkAndHookIntoCloseButton () {
     }
   }
 
-  setTimeout(checkAndHookIntoCloseButton, 5000);
+  setTimeout(checkAndHookIntoCloseButton, 1000);
 }
 
 checkAndHookIntoCloseButton()
