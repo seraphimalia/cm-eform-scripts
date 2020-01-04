@@ -39,9 +39,9 @@ function _cdlog (text) {
 }
 
 function getPRFs () {
-  var prfs = processPRFs(getPRFContainer(), 'PRF Number');
+  var prfs = processPRFs(getPRFContainer(), false);
 
-  var rhts = processPRFs(getRHTContainer(), 'RHT Number');
+  var rhts = processPRFs(getRHTContainer(), true);
 
   if (prfs.length === 0 && rhts.length === 0) {
     var prf = {};
@@ -68,8 +68,10 @@ function getRHTContainer () {
     .has(`label:contains('Triage')`);
 }
 
-function processPRFs (prfFormContainer, numberField) {
+function processPRFs (prfFormContainer, isRHT) {
   var prfs = [];
+
+  var numberField = (isRHT ? 'PRF Number' : 'RHT Number')
 
   if (prfFormContainer.length > 0) {
     for (var i = 0; i < prfFormContainer.length; i++) {
@@ -80,7 +82,7 @@ function processPRFs (prfFormContainer, numberField) {
         "undefined"
       ) {
         var prf = {};
-        prf["entry.666285626"] = prfFormContainer.find(
+        prf["entry.666285626"] = (isRHT ? 'RHT' : '') + prfFormContainer.find(
           `label:contains('${numberField}')`
         )[i].nextSibling.value;
         prf["entry.2108097200"] = prfFormContainer.find(
