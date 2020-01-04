@@ -676,8 +676,16 @@ addEFormButton();
 // POST INCIDENT NUMBER & URL
 //////////////////////////////////////////////////////////////////////////////////////////////
 
-function postIncidentNumberWithUrl (incidentNumber, Url, createdPerson) {
-  var serializedData = `action=add&IncidentNumber=${encodeURIComponent(incidentNumber)}&URL=${encodeURIComponent(Url)}&CreatedPerson=${encodeURIComponent(createdPerson)}`
+function postIncidentNumberWithUrl () {
+  var incidentNumber = $("#IncidentReference").html()
+  var incidentDate = findIncidentDate()
+  var Url = window.location.href
+  var createdPerson = $(".profile-dropdown-toggle").text().trim()
+
+  var serializedData = `action=add&IncidentNumber=${encodeURIComponent(incidentNumber)}` +
+    `&IncidentDate=${encodeURIComponent(incidentDate)}` +
+    `&URL=${encodeURIComponent(Url)}` +
+    `&CreatedPerson=${encodeURIComponent(createdPerson)}`;
 
   var url = "https://script.google.com/macros/s/AKfycbyr-ScTDersx1PD1rd5qcqy1_uJ7sZ_J_SLXwsd8HDbWXX9bZs/exec?" + serializedData + "&callback=?";
   $.getJSON(url)
@@ -685,11 +693,8 @@ function postIncidentNumberWithUrl (incidentNumber, Url, createdPerson) {
 
 function waitForLoadAndPost () {
   if ($("#ToggleStatus[data-statusid=2]").length > 0) {
-    var incidentNumber = $("#IncidentReference").html()
-    var Url = window.location.href
-    var createdPerson = $(".profile-dropdown-toggle").text().trim()
 
-    postIncidentNumberWithUrl(incidentNumber, Url, createdPerson)
+    postIncidentNumberWithUrl()
   } else {
     setTimeout(waitForLoadAndPost, 5000);
   }
