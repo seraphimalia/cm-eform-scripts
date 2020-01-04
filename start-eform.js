@@ -74,7 +74,7 @@ function processPRFs (prfFormContainer, numberField) {
   if (prfFormContainer.length > 0) {
     for (var i = 0; i < prfFormContainer.length; i++) {
       if (
-        prfFormContainer.find(`label:contains('PRF Number')`)[i].nextSibling
+        prfFormContainer.find(`label:contains('${numberField}')`)[i].nextSibling
           .value.length > 0 &&
         typeof prfFormContainer.find(`label:contains('Triage')`)[i] !==
         "undefined"
