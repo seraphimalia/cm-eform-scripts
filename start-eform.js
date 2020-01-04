@@ -714,7 +714,7 @@ function closeHandler () {
 
 function checkAndHookIntoCloseButton () {
   if ($("#ToggleStatus[data-statusid=2]").length > 0) {
-    var hookEnabled = $("#ToggleStatus").attr('hooked')
+    var hooked = $("#ToggleStatus").attr('hooked')
     if (!hooked) {
       $("#ToggleStatus").click(closeHandler)
       $("#ToggleStatus").attr('hooked', true)
