@@ -39,11 +39,13 @@ function _cdlog (text) {
 }
 
 function getPRFs () {
-  var prfs = processPRFs(getPRFContainer(), false);
+  var prfs = processPRFs(getPRFContainer(), 'PRF');
 
-  var rhts = processPRFs(getRHTContainer(), true);
+  var rhts = processPRFs(getRHTContainer(), 'RHT');
 
-  if (prfs.length === 0 && rhts.length === 0) {
+  var metroPts = processPRFs(getMetroAmboContainer(), 'METRO');
+
+  if (prfs.length === 0 && rhts.length === 0 && metroPts.length === 0) {
     var prf = {};
     prf["entry.2108097200"] = "Unknown";
     prf["entry.1646195359"] = -1;
@@ -51,7 +53,7 @@ function getPRFs () {
     return [prf];
   }
 
-  return [...prfs, ...rhts]
+  return [...prfs, ...rhts, ...metroPts]
 }
 
 function getPRFContainer () {
@@ -68,11 +70,32 @@ function getRHTContainer () {
     .has(`label:contains('Triage')`);
 }
 
-function processPRFs (prfFormContainer, isRHT) {
+function getMetroAmboContainer () {
+  return $("#ChecklistsContainer")
+    .find(`div[data-checklist-id]`)
+    .has(`label:contains('WCG Metro Pt Details')`)
+    .has(`label:contains('Triage')`);
+}
+
+function processPRFs (prfFormContainer, formType) {
   var prfs = [];
 
-  var numberField = (isRHT ? 'RHT Number' : 'PRF Number')
-
+  var numberField;
+  switch (formType) {
+    case 'PRF': {
+      numberField = 'PRF Number';
+      break;
+    }
+    case 'RHT': {
+      numberField = 'RHT Number';
+      break;
+    }
+    case 'METRO': {
+      numberField = 'SLIP Number';
+      break;
+    }
+  }
+  
   if (prfFormContainer.length > 0) {
     for (var i = 0; i < prfFormContainer.length; i++) {
       if (
@@ -82,9 +105,15 @@ function processPRFs (prfFormContainer, isRHT) {
         "undefined"
       ) {
         var prf = {};
-        prf["entry.666285626"] = (isRHT ? 'RHT' : '') + prfFormContainer.find(
-          `label:contains('${numberField}')`
-        )[i].nextSibling.value;
+        if (formType === 'RHT' || formType === 'PRF') {
+          prf["entry.666285626"] = (formType === 'RHT' ? 'RHT' : '') + prfFormContainer.find(
+            `label:contains('${numberField}')`
+          )[i].nextSibling.value;
+        } else {
+          prf["entry.151097000"] = prfFormContainer.find(
+            `label:contains('${numberField}')`
+          )[i].nextSibling.value;
+        }
         prf["entry.2108097200"] = prfFormContainer.find(
           `label:contains('Triage')`
         )[i].nextSibling.value;
