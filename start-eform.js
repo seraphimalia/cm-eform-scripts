@@ -110,6 +110,8 @@ function processPRFs (prfFormContainer, formType) {
             `label:contains('${numberField}')`
           )[i].nextSibling.value;
         } else {
+          prf["entry.393375178"] = 'WCG Metro CM Ambulance';
+          prf["entry.666285626"] = 'No PRF, Pt treated by WCG Metro CM Ambulance';
           prf["entry.151097000"] = prfFormContainer.find(
             `label:contains('${numberField}')`
           )[i].nextSibling.value;
