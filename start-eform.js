@@ -110,8 +110,10 @@ function processPRFs (prfFormContainer, formType) {
             `label:contains('${numberField}')`
           )[i].nextSibling.value;
         } else {
-          prf["entry.393375178"] = 'WCG Metro CM Ambulance';
-          prf["entry.666285626"] = 'No PRF, Pt treated by WCG Metro CM Ambulance';
+          prf["entry.2018139507"] = "No" // No Drugs
+          prf["entry.1842118913"] = "No" // No Mistakes
+          prf["entry.393375178"] = 'WCG Metro CM Ambulance'; // Vehicle
+          prf["entry.666285626"] = 'No PRF, Pt treated by WCG Metro CM Ambulance'; // PRF Number
           prf["entry.151097000"] = prfFormContainer.find(
             `label:contains('${numberField}')`
           )[i].nextSibling.value;
