@@ -59,21 +59,21 @@ function getPRFs () {
 function getPRFContainer () {
   return $("#ChecklistsContainer")
     .find(`div[data-checklist-id]`)
-    .has(`label:contains('PRF Number')`)
+    .has(`h4:contains('PRF Number')`)
     .has(`label:contains('Triage')`);
 }
 
 function getRHTContainer () {
   return $("#ChecklistsContainer")
     .find(`div[data-checklist-id]`)
-    .has(`label:contains('RHT Number')`)
+    .has(`h4:contains('RHT Number')`)
     .has(`label:contains('Triage')`);
 }
 
 function getMetroAmboContainer () {
   return $("#ChecklistsContainer")
     .find(`div[data-checklist-id]`)
-    .has(`label:contains('WCG Metro Pt Details')`)
+    .has(`h4:contains('WCG Metro Pt Details')`)
     .has(`label:contains('Triage')`);
 }
 
