@@ -503,10 +503,10 @@ function extractCallTypeFromElement (primaryTypeElement) {
 function extractCallsignFromTimelineElement (timelineElement, includeRV) {
   const CALLSIGN_PATTERN = ((includeRV) ? /([A-Z][A-Z]\d{2,3})(\D|$)/g : /([A-QS-Z][A-Z]\d{2,3})(\D|$)/g);
   let innerText = timelineElement.innerText;
-  let match = CALLSIGN_PATTERN.exec(innerText);
+  let match
   let callsign
   while ((match = CALLSIGN_PATTERN.exec(innerText)) !== null) {
-    if (includeRV && match[1].startsWith('RV')) {
+    if ((includeRV && match[1].startsWith('RV')) || (!includeRV)) {
       _cdlog("STARTEFORM: Found callsign " + match[1]);
       return match[1];
     }
