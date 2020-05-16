@@ -257,31 +257,27 @@ function buildEForm () {
   vars["entry.237290975"] = $("#AddressLineLatLng").html();
 
   // First On Scene
-  if (!isResponseVehicleAssigned()) {
-    const firstOnSceneTimeline = $("#timeline").find(
-      `div.panel:contains(' - On Scene')`
+  const firstOnSceneTimeline = $("#timeline").find(
+    `div.panel:contains(' - On Scene')`
+  );
+  if (firstOnSceneTimeline.length > 0) {
+    const callsign = extractVehicleCallsignFromTimelineElement(
+      firstOnSceneTimeline[firstOnSceneTimeline.length - 1]
     );
-    if (firstOnSceneTimeline.length > 0) {
-      const callsign = extractVehicleCallsignFromTimelineElement(
-        firstOnSceneTimeline[firstOnSceneTimeline.length - 1]
-      );
-      if (callsign) {
-        vars["entry.393375178"] = determineCallsignVehicle(callsign);
-      } else if (responders.length > 0) {
-        vars["entry.393375178"] = "Private Vehicle";
-      } else {
-        vars["entry.393375178"] = "No CM Resources";
-      }
+    if (callsign) {
+      vars["entry.393375178"] = determineCallsignVehicle(callsign);
+    } else if (responders.length > 0) {
+      vars["entry.393375178"] = "Private Vehicle";
     } else {
-      _cdlog("STARTEFORM: There was no history for First On Scene");
-      if (responders.length > 0) {
-        vars["entry.393375178"] = "Private Vehicle";
-      } else {
-        vars["entry.393375178"] = "No CM Resources";
-      }
+      vars["entry.393375178"] = "No CM Resources";
     }
   } else {
-    _cdlog("STARTEFORM: Ignoring first on scene because an RV was assigned.");
+    _cdlog("STARTEFORM: There was no history for First On Scene");
+    if (responders.length > 0) {
+      vars["entry.393375178"] = "Private Vehicle";
+    } else {
+      vars["entry.393375178"] = "No CM Resources";
+    }
   }
 
   // Close Reasons
