@@ -460,7 +460,7 @@ function determineCallsignVehicle (callsign) {
   // 	}
 
   // }
-  const firstTwoCharacters = callsign.substring(0, 1);
+  const firstTwoCharacters = callsign.substring(0, 2);
   if (
     firstTwoCharacters === "RV" ||
     firstTwoCharacters === "LC" ||
