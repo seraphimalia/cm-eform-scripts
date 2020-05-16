@@ -267,12 +267,18 @@ function buildEForm () {
       );
       if (callsign) {
         vars["entry.393375178"] = determineCallsignVehicle(callsign);
+      } else if (responders.length > 0) {
+        vars["entry.393375178"] = "Private Vehicle";
       } else {
         vars["entry.393375178"] = "No CM Resources";
       }
     } else {
       _cdlog("STARTEFORM: There was no history for First On Scene");
-      vars["entry.393375178"] = "No CM Resources";
+      if (responders.length > 0) {
+        vars["entry.393375178"] = "Private Vehicle";
+      } else {
+        vars["entry.393375178"] = "No CM Resources";
+      }
     }
   } else {
     _cdlog("STARTEFORM: Ignoring first on scene because an RV was assigned.");
@@ -530,6 +536,11 @@ function findMetroReferenceNumber () {
   if (notes.length === 0) {
     notes = $("#NotesTable").find(
       `div.row:contains('DoH - EMS (Metro) Ambulance Services')`
+    );
+  }
+  if (notes.length === 0) {
+    notes = $("#timeline").find(
+      `div.panel:contains('DoH - EMS (Metro) Ambulance Services')`
     );
   }
   for (let i = 0; i < notes.length; i++) {
