@@ -500,28 +500,39 @@ function extractCallTypeFromElement (primaryTypeElement) {
   return "";
 }
 
-function extractCallsignFromTimelineElement (timelineElement) {
-  const CALLSIGN_PATTERN = /([A-QS-Z][A-Z]\d{2,3})(\D|$)/g;
+function extractCallsignFromTimelineElement (timelineElement, includeRV) {
+  const CALLSIGN_PATTERN = ((includeRV) ? /([A-Z][A-Z]\d{2,3})(\D|$)/g : /([A-QS-Z][A-Z]\d{2,3})(\D|$)/g);
   let innerText = timelineElement.innerText;
   let match = CALLSIGN_PATTERN.exec(innerText);
-  if (match) {
-    _cdlog("STARTEFORM: Found callsign " + match[1]);
-    return match[1];
-  } else {
-    _cdlog("STARTEFORM: No callsign found: " + innerText);
+  let callsign
+  while ((match = CALLSIGN_PATTERN.exec(innerText)) !== null) {
+    if (includeRV && match[1].startsWith('RV')) {
+      _cdlog("STARTEFORM: Found callsign " + match[1]);
+      return match[1];
+    }
+
+    if (!callsign) {
+      _cdlog("STARTEFORM: Found callsign " + match[1]);
+      callsign = match[1]
+    }
   }
-  return undefined;
+
+  if (!callsign) {
+    _cdlog("STARTEFORM: No callsign found: " + innerText)
+  }
+
+  return callsign;
 }
 
 function extractVehicleCallsignFromTimelineElement (timelineElement) {
   const callsignElements = $(timelineElement).find('div:has(div:has(i.fa-car))')
   if (callsignElements.length > 0) {
-    const callsign = extractCallsignFromTimelineElement(callsignElements[0])
+    const callsign = extractCallsignFromTimelineElement(callsignElements[0], true)
     if (callsign !== undefined) {
       return callsign
     }
   }
-  return extractCallsignFromTimelineElement(timelineElement)
+  return extractCallsignFromTimelineElement(timelineElement, true)
 }
 
 function findEarliestTimelineItem (timelineList1, timelineList2) {
