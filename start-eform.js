@@ -262,7 +262,7 @@ function buildEForm () {
       `div.panel:contains(' - On Scene')`
     );
     if (firstOnSceneTimeline.length > 0) {
-      const callsign = extractCallsignFromTimelineElement(
+      const callsign = extractVehicleCallsignFromTimelineElement(
         firstOnSceneTimeline[firstOnSceneTimeline.length - 1]
       );
       if (callsign) {
@@ -443,7 +443,7 @@ function buildEForm () {
 
 function isResponseVehicleAssigned () {
   const mobileTimelineAccepted = $("#timeline").find(
-    `div.panel:contains(' - Accepted')`
+    `div.panel i.fa-car`
   );
   return mobileTimelineAccepted.length > 0;
 }
@@ -505,7 +505,7 @@ function extractCallTypeFromElement (primaryTypeElement) {
 }
 
 function extractCallsignFromTimelineElement (timelineElement) {
-  const CALLSIGN_PATTERN = /([A-QS-Z][A-Z]\d{2,3})[\D$]/g;
+  const CALLSIGN_PATTERN = /([A-QS-Z][A-Z]\d{2,3})(\D|$)/g;
   let innerText = timelineElement.innerText;
   let match = CALLSIGN_PATTERN.exec(innerText);
   if (match) {
@@ -515,6 +515,17 @@ function extractCallsignFromTimelineElement (timelineElement) {
     _cdlog("STARTEFORM: No callsign found: " + innerText);
   }
   return undefined;
+}
+
+function extractVehicleCallsignFromTimelineElement (timelineElement) {
+  const callsignElements = $(timelineElement).find('div:has(div:has(i.fa-car))')
+  if (callsignElements.length > 0) {
+    const callsign = extractCallsignFromTimelineElement(callsignElements[0])
+    if (callsign !== undefined) {
+      return callsign
+    }
+  }
+  return extractCallsignFromTimelineElement(timelineElement)
 }
 
 function findEarliestTimelineItem (timelineList1, timelineList2) {
