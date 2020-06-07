@@ -142,6 +142,8 @@ function processPRFs (prfFormContainer, formType) {
 function buildEForm () {
   var vars = {};
 
+  vars["entry.1282291516"] = window.location.href
+
   // Source
   const sourceElementLength = $("#DynamicListsContainer")
     .find(`div[data-groupid='319']`)
@@ -169,8 +171,6 @@ function buildEForm () {
         break;
       }
     }
-
-    vars["entry.1282291516"] = window.location.href
 
     vars["entry.1261286527"] = $("#DynamicListsContainer")
       .find(`div[data-groupid='319']`)

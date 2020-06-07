@@ -17,16 +17,16 @@ function addJQueryUi () {
 }
 
 function addEFormScript () {
-    // addJSScript("https://cdn.jsdelivr.net/gh/seraphimalia/cm-eform-scripts@master/start-eform.min.js");
+    addJSScript("https://cdn.jsdelivr.net/gh/seraphimalia/cm-eform-scripts@master/start-eform.min.js");
     // addJSScript("https://rawgit.com/seraphimalia/cm-eform-scripts/master/start-eform.js");
-    addJSScript("https://raw.githubusercontent.com/seraphimalia/cm-eform-scripts/development/start-eform.js");
+    // addJSScript("http://localhost:8000/start-eform.js");
     _cdlog("CDInjector: Eform Script Added.");
 }
 
 function addCreateIncidentRulesScript () {
-    // addJSScript("https://cdn.jsdelivr.net/gh/seraphimalia/cm-eform-scripts@master/create-incident-rules.js");
+    addJSScript("https://cdn.jsdelivr.net/gh/seraphimalia/cm-eform-scripts@master/create-incident-rules.js");
     // addJSScript("https://rawgit.com/seraphimalia/cm-eform-scripts/master/create-incident-rules.js");
-    addJSScript("https://raw.githubusercontent.com/seraphimalia/cm-eform-scripts/development/create-incident-rules.js");
+    // addJSScript("http://localhost:8000/create-incident-rules.js");
     _cdlog("CDInjector: Create Incident Rules Script Added.");
 }
 
