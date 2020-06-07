@@ -37,7 +37,7 @@ function _cdlog (text) {
 function extractOrderNumberFromUrl (url) {
     let ORDER_NUMBER_REGEX = /https:\/\/cm.rpdy.io\/Orders\/(\d+)(($)|(\?)|(\#))/;
     let matches = ORDER_NUMBER_REGEX.exec(url);
-    if (matches.length > 1 && !isNaN(matches[1])) {
+    if (matches && matches.length > 1 && !isNaN(matches[1])) {
         return matches[1];
     }
     return undefined;
