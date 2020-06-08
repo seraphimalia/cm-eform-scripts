@@ -58,13 +58,15 @@ function validateCallSource () {
 
 function validateCallSourceOther () {
   var { exists, source, sourceOther } = getCallSourceData()
-  var sourceLower = source.toLowerCase()
 
-  if (exists &&
-    sourceLower !== "emergency line" &&
-    sourceLower !== "external agency (doh)" &&
-    sourceLower !== "external agency (er24)" && (!sourceOther || sourceOther.length === 0)) {
-    return false
+  if (exists) {
+    var sourceLower = source.toLowerCase()
+
+    if (sourceLower !== "emergency line" &&
+      sourceLower !== "external agency (doh)" &&
+      sourceLower !== "external agency (er24)" && (!sourceOther || sourceOther.length === 0)) {
+      return false
+    }
   }
   return true
 }
@@ -153,6 +155,7 @@ function validateForm () {
   } catch (error) {
     alert('Please let Clive know about this error: ' + error.message)
     $("#CreateIncident").triggerHandler('click')
+    console.error(error)
   }
 }
 
@@ -170,4 +173,4 @@ function replaceCreateButton () {
   $("#CreateIncidentCustom").on('click', validateForm)
 }
 
-replaceCreateButton()
+replaceCreateButton();
