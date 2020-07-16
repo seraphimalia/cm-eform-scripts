@@ -739,7 +739,7 @@ addEFormButton();
 //////////////////////////////////////////////////////////////////////////////////////////////
 
 function postIncidentNumberWithUrl () {
-  var incidentNumber = $("#IncidentReference").html()
+  var incidentNumber = $("#IncidentReference").text()
   var incidentDate = findIncidentDate() || incidentDateFromReference()
   var Url = window.location.href
   var createdPerson = $(".profile-dropdown-toggle").text().trim()
