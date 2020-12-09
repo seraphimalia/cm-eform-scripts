@@ -642,7 +642,7 @@ function unEntity (str) {
 }
 
 function addEFormButton () {
-  // if ($("#ToggleStatus[data-statusid=1]").length > 0) {
+  if ($("#ToggleStatus[data-statusid=1]").length > 0 || $("#ToggleStatus[data-statusid=2]").length > 0) {
     $(
       '<span id="StartEformMenu"><a class="btn btn-xs btn-default" href="javascript:buildEForm();" id="BuildEForm">Start eForm</a></span>'
     ).insertAfter("#ActiveOrderMenu");
@@ -653,10 +653,10 @@ function addEFormButton () {
       _cdlog("STARTEFORM: EForm Button Added");
       setTimeout(doubleCheckEformButtonExists, 10000);
     }
-  // } else {
-  //   _cdlog("STARTEFORM: Incident not closed, Checking again Later!");
-  //   setTimeout(addEFormButton, 5000);
-  // }
+  } else {
+    _cdlog("STARTEFORM: Incident not closed, Checking again Later!");
+    setTimeout(addEFormButton, 5000);
+  }
 }
 
 function doubleCheckEformButtonExists () {
