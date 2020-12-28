@@ -642,7 +642,7 @@ function unEntity (str) {
 }
 
 function addEFormButton () {
-  if ($("#ToggleStatus[data-statusid=1]").length > 0 || $("#ToggleStatus[data-statusid=2]").length > 0) {
+  if ($("#ToggleStatus[data-statusid=1]").length > 0) {
     $(
       '<span id="StartEformMenu"><a class="btn btn-xs btn-default" href="javascript:buildEForm();" id="BuildEForm">Start eForm</a></span>'
     ).insertAfter("#ActiveOrderMenu");
