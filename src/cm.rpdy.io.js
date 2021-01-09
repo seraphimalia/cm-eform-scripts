@@ -17,9 +17,9 @@ function addJQueryUi () {
 }
 
 function addEFormScript () {
-    addJSScript("https://cdn.jsdelivr.net/gh/seraphimalia/cm-eform-scripts@master/start-eform.min.js");
+    // addJSScript("https://cdn.jsdelivr.net/gh/seraphimalia/cm-eform-scripts@master/start-eform.min.js");
     // addJSScript("https://rawgit.com/seraphimalia/cm-eform-scripts/master/start-eform.js");
-    // addJSScript("http://localhost:8000/start-eform.js");
+    addJSScript("http://172.16.10.45:8000/start-eform.js");
     _cdlog("CDInjector: Eform Script Added.");
 }
 

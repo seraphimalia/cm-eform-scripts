@@ -32,6 +32,42 @@ entry.867510255=Non-billable&
 entry.1807757148=Government+Facility&
 entry.162948545=Resq-Medix
 */
+
+const GOOGLE_FORM = {
+  // Page 1
+  INCIDENT_NUMBER: 'entry.1654195642',
+  METRO_REF: 'entry.151097000',
+  INCIDENT_URL: 'entry.1282291516',
+  CALL_SOURCE: 'entry.1261286527',
+  CALL_SOURCE_OTHER: 'entry.1014478975',
+  CALL_TYPE: 'entry.1655594278',
+  PRIORITY: 'entry.1375744071', // 1 or 2
+  RESPONDERS: 'entry.1725583490',
+  ADDRESS: 'entry.895328514',
+  LONG_LAT: 'entry.237290975',
+  INCIDENT_DATE: 'entry.2077619580',
+  INCIDENT_TIME: 'entry.524386880',
+  PAGED_TIME: 'entry.915011561',
+  MOBILE_TIME: 'entry.295402896',
+  ON_SCENE_TIME: 'entry.865471720',
+  FREE_TIME: 'entry.835032369',
+  
+  // Page 2
+  OUTCOME_CALL_TYPE: 'entry.624304548',
+  PATIENT_TRIAGE: 'entry.2108097200',
+  PATIENT_AGE: 'entry.1646195359',
+  PATIENT_ETHNIC_GROUP: 'entry.1552249109',
+  PATIENT_GENDER: 'entry.847941590',
+  PRF_NUMBER: 'entry.666285626',
+  PRF_DRUGS_USED: 'entry.2018139507', // Yes or No
+  PRF_MISTAKES_DETECTED: 'entry.1842118913', // Yes or No
+  INDUCTION_SHIFT: 'entry.27227789',
+  VEHICLE_TYPE: 'entry.393375178', // The type of the vehicle first on scene (e.g. Private Vehicle)
+  PATIENT_DESTINATION: 'entry.1807757148',
+  OUTCOME: 'entry.162948545',
+  CALL_OUTSOURCED: 'entry.1883567358' // Yes or No,
+}
+
 function _cdlog (text) {
   if (document.location.href.indexOf("cdinjector-debug=true") !== -1) {
     console.log(text);
@@ -47,9 +83,9 @@ function getPRFs () {
 
   if (prfs.length === 0 && rhts.length === 0 && metroPts.length === 0) {
     var prf = {};
-    prf["entry.2108097200"] = "Unknown";
-    prf["entry.1646195359"] = -1;
-    prf["entry.1552249109"] = "Unknown";
+    prf[GOOGLE_FORM.PATIENT_TRIAGE] = "Unknown";
+    prf[GOOGLE_FORM.PATIENT_AGE] = -1;
+    prf[GOOGLE_FORM.PATIENT_ETHNIC_GROUP] = "Unknown";
     return [prf];
   }
 
@@ -106,31 +142,31 @@ function processPRFs (prfFormContainer, formType) {
       ) {
         var prf = {};
         if (formType === 'RHT' || formType === 'PRF') {
-          prf["entry.666285626"] = (formType === 'RHT' ? 'RHT' : '') + prfFormContainer.find(
+          prf[GOOGLE_FORM.PRF_NUMBER] = (formType === 'RHT' ? 'RHT' : '') + prfFormContainer.find(
             `label:contains('${numberField}')`
           )[i].nextSibling.value;
         } else {
-          prf["entry.2018139507"] = "No" // No Drugs
-          prf["entry.1842118913"] = "No" // No Mistakes
-          prf["entry.393375178"] = 'WCG Metro CM Ambulance'; // Vehicle
-          prf["entry.666285626"] = 'No PRF, Pt treated by WCG Metro CM Ambulance'; // PRF Number
-          prf["entry.151097000"] = prfFormContainer.find(
+          prf[GOOGLE_FORM.PRF_DRUGS_USED] = "No" // No Drugs
+          prf[GOOGLE_FORM.PRF_MISTAKES_DETECTED] = "No" // No Mistakes
+          prf[GOOGLE_FORM.VEHICLE_TYPE] = 'WCG Metro CM Ambulance'; // Vehicle
+          prf[GOOGLE_FORM.PRF_NUMBER] = 'No PRF, Pt treated by WCG Metro CM Ambulance'; // PRF Number
+          prf[GOOGLE_FORM.METRO_REF] = prfFormContainer.find(
             `label:contains('${numberField}')`
           )[i].nextSibling.value;
         }
-        prf["entry.2108097200"] = prfFormContainer.find(
+        prf[GOOGLE_FORM.PATIENT_TRIAGE] = prfFormContainer.find(
           `label:contains('Triage')`
         )[i].nextSibling.value;
-        prf["entry.847941590"] = prfFormContainer.find(
+        prf[GOOGLE_FORM.PATIENT_GENDER] = prfFormContainer.find(
           `label:contains('Patient Gender')`
         )[i].nextSibling.value;
-        prf["entry.1646195359"] = prfFormContainer.find(
+        prf[GOOGLE_FORM.PATIENT_AGE] = prfFormContainer.find(
           `label:contains('Patient Age (Years)')`
         )[i].nextSibling.value;
-        prf["entry.1552249109"] = prfFormContainer.find(
+        prf[GOOGLE_FORM.PATIENT_ETHNIC_GROUP] = prfFormContainer.find(
           `label:contains('Patient Ethnic Group')`
         )[i].nextSibling.value;
-        prf["entry.1883567358"] = "No"
+        prf[GOOGLE_FORM.CALL_OUTSOURCED] = "No"
         prfs.push(prf);
       }
     }
@@ -142,7 +178,7 @@ function processPRFs (prfFormContainer, formType) {
 function buildEForm () {
   var vars = {};
 
-  vars["entry.1282291516"] = window.location.href
+  vars[GOOGLE_FORM.INCIDENT_URL] = window.location.href
 
   // Source
   const sourceElementLength = $("#DynamicListsContainer")
@@ -172,47 +208,47 @@ function buildEForm () {
       }
     }
 
-    vars["entry.1261286527"] = $("#DynamicListsContainer")
+    vars[GOOGLE_FORM.CALL_SOURCE] = $("#DynamicListsContainer")
       .find(`div[data-groupid='319']`)
       .find(`label:contains('Call Source')`)[indexSource].nextSibling.innerText;
 
-    vars["entry.1014478975"] = $("#DynamicListsContainer")
+    vars[GOOGLE_FORM.CALL_SOURCE_OTHER] = $("#DynamicListsContainer")
       .find(`div[data-groupid='319']`)
       .find(`label:contains('Call Source')`)[
       indexSourceOther
     ].nextSibling.innerText;
 
-    if (vars["entry.1261286527"] === "External Agency (DOH)") {
-      vars["entry.1261286527"] = "External Agency (DoH)";
+    if (vars[GOOGLE_FORM.CALL_SOURCE] === "External Agency (DOH)") {
+      vars[GOOGLE_FORM.CALL_SOURCE] = "External Agency (DoH)";
     }
-    if (vars["entry.1261286527"] === "Social Media (external)") {
-      vars["entry.1261286527"] = "Social Media (External)";
+    if (vars[GOOGLE_FORM.CALL_SOURCE] === "Social Media (external)") {
+      vars[GOOGLE_FORM.CALL_SOURCE] = "Social Media (External)";
     }
     if (
-      vars["entry.1261286527"] === "Emergency Line" ||
-      vars["entry.1261286527"] === "External Agency (DoH)" ||
-      vars["entry.1261286527"] === "External Agency (ER24)"
+      vars[GOOGLE_FORM.CALL_SOURCE] === "Emergency Line" ||
+      vars[GOOGLE_FORM.CALL_SOURCE] === "External Agency (DoH)" ||
+      vars[GOOGLE_FORM.CALL_SOURCE] === "External Agency (ER24)"
     ) {
-      vars["entry.1014478975"] = "Other";
+      vars[GOOGLE_FORM.CALL_SOURCE_OTHER] = "Other";
     }
   }
 
   // Incident Number
-  vars["entry.1654195642"] = $("#IncidentReference").html();
+  vars[GOOGLE_FORM.INCIDENT_NUMBER] = $("#IncidentReference").html();
 
   // Call Type
-  vars["entry.1655594278"] = extractCallTypeFromElement(
+  vars[GOOGLE_FORM.CALL_TYPE] = extractCallTypeFromElement(
     $("#PrimaryComplaintTitle")
   );
 
   // Outcome call type
-  vars["entry.624304548"] = vars["entry.1655594278"];
+  vars[GOOGLE_FORM.OUTCOME_CALL_TYPE] = vars[GOOGLE_FORM.CALL_TYPE];
 
   // Metro Reference Number
-  vars["entry.151097000"] = findMetroReferenceNumber();
+  vars[GOOGLE_FORM.METRO_REF] = findMetroReferenceNumber();
 
   // Priority
-  vars["entry.1375744071"] = $("#PrimaryComplaintTitle")[0].innerText.charAt(
+  vars[GOOGLE_FORM.PRIORITY] = $("#PrimaryComplaintTitle")[0].innerText.charAt(
     $("#PrimaryComplaintTitle")[0].innerText.length - 1
   );
 
@@ -244,17 +280,17 @@ function buildEForm () {
   if (responders.length === 0) {
     const closeReason = $("#closedReasonTitle").text()
     if (closeReason.substring(0, 10).toLowerCase() === 'outsourced') {
-      vars["entry.1725583490"] = "None"
+      vars[GOOGLE_FORM.RESPONDERS] = "None"
     }
   } else {
-    vars["entry.1725583490"] = responders.join(",");
+    vars[GOOGLE_FORM.RESPONDERS] = responders.join(",");
   }
 
   // Address
-  vars["entry.895328514"] = $("#AddressLine").html();
+  vars[GOOGLE_FORM.ADDRESS] = $("#AddressLine").html();
 
   // Longitude & Latitude
-  vars["entry.237290975"] = $("#AddressLineLatLng").html();
+  vars[GOOGLE_FORM.LONG_LAT] = $("#AddressLineLatLng").html();
 
   // First On Scene
   const firstOnSceneTimeline = $("#timeline").find(
@@ -265,76 +301,76 @@ function buildEForm () {
       firstOnSceneTimeline[firstOnSceneTimeline.length - 1]
     );
     if (callsign) {
-      vars["entry.393375178"] = determineCallsignVehicle(callsign);
+      vars[GOOGLE_FORM.VEHICLE_TYPE] = determineCallsignVehicle(callsign);
     } else if (responders.length > 0) {
-      vars["entry.393375178"] = "Private Vehicle";
+      vars[GOOGLE_FORM.VEHICLE_TYPE] = "Private Vehicle";
     } else {
-      vars["entry.393375178"] = "No CM Resources";
+      vars[GOOGLE_FORM.VEHICLE_TYPE] = "No CM Resources";
     }
   } else {
     _cdlog("STARTEFORM: There was no history for First On Scene");
     if (responders.length > 0) {
-      vars["entry.393375178"] = "Private Vehicle";
+      vars[GOOGLE_FORM.VEHICLE_TYPE] = "Private Vehicle";
     } else {
-      vars["entry.393375178"] = "No CM Resources";
+      vars[GOOGLE_FORM.VEHICLE_TYPE] = "No CM Resources";
     }
   }
 
   // Close Reasons
   const closeReason = $("#closedReasonTitle").text()
   if (closeReason.substring(0, "patient refused".length).toLowerCase() === 'patient refused') {
-    vars["entry.162948545"] = "RHT" // Outcome
-    vars["entry.1807757148"] = "No Receiving Facility" // Destination Hospital
+    vars[GOOGLE_FORM.OUTCOME] = "RHT" // Outcome
+    vars[GOOGLE_FORM.PATIENT_DESTINATION] = "No Receiving Facility" // Destination Hospital
   } else if (closeReason.substring(0, "cancelled by".length).toLowerCase() === 'cancelled by') {
-    vars["entry.666285626"] = "No PRF, Cancelled by Caller or Referring Service"
-    vars["entry.162948545"] = "Cancelled by Caller or Referring Service" // Outcome
-    vars["entry.2018139507"] = "No" // No Drugs
-    vars["entry.1842118913"] = "No" // No Mistakes
-    vars["entry.847941590"] = "No Patient"; // Triage
-    vars["entry.1807757148"] = "No Receiving Facility" // Destination Hospital
+    vars[GOOGLE_FORM.PRF_NUMBER] = "No PRF, Cancelled by Caller or Referring Service"
+    vars[GOOGLE_FORM.OUTCOME] = "Cancelled by Caller or Referring Service" // Outcome
+    vars[GOOGLE_FORM.PRF_DRUGS_USED] = "No" // No Drugs
+    vars[GOOGLE_FORM.PRF_MISTAKES_DETECTED] = "No" // No Mistakes
+    vars[GOOGLE_FORM.PATIENT_GENDER] = "No Patient"; // Triage
+    vars[GOOGLE_FORM.PATIENT_DESTINATION] = "No Receiving Facility" // Destination Hospital
   } else if (closeReason.toLowerCase() === 'conveyed By law enforcement/police') {
-    vars["entry.162948545"] = "SAPS" // Outcome
+    vars[GOOGLE_FORM.OUTCOME] = "SAPS" // Outcome
   } else if (closeReason.toLowerCase() === 'conveyed By private transport') {
-    vars["entry.162948545"] = "Transported Privately" // Outcome
+    vars[GOOGLE_FORM.OUTCOME] = "Transported Privately" // Outcome
   } else if (closeReason.toLowerCase() === 'declaration of death (doa)') {
-    vars["entry.162948545"] = "FPS/DOA"
-    vars["entry.1807757148"] = "No Receiving Facility" // Destination Hospital
+    vars[GOOGLE_FORM.OUTCOME] = "FPS/DOA"
+    vars[GOOGLE_FORM.PATIENT_DESTINATION] = "No Receiving Facility" // Destination Hospital
   } else if (closeReason.toLowerCase() === 'nsr (no patient found)') {
-    vars["entry.666285626"] = "No PRF, No Patient Found"
-    vars["entry.162948545"] = "No Patient Found" // Outcome
-    vars["entry.2018139507"] = "No" // No Drugs
-    vars["entry.1842118913"] = "No" // No Mistakes
-    vars["entry.847941590"] = "No Patient"; // Triage
-    vars["entry.1807757148"] = "No Receiving Facility" // Destination Hospital
+    vars[GOOGLE_FORM.PRF_NUMBER] = "No PRF, No Patient Found"
+    vars[GOOGLE_FORM.OUTCOME] = "No Patient Found" // Outcome
+    vars[GOOGLE_FORM.PRF_DRUGS_USED] = "No" // No Drugs
+    vars[GOOGLE_FORM.PRF_MISTAKES_DETECTED] = "No" // No Mistakes
+    vars[GOOGLE_FORM.PATIENT_GENDER] = "No Patient"; // Triage
+    vars[GOOGLE_FORM.PATIENT_DESTINATION] = "No Receiving Facility" // Destination Hospital
   } else if (closeReason.toLowerCase() === 'nsr (no scene found)') {
-    vars["entry.666285626"] = "No PRF, No Scene Found"
-    vars["entry.162948545"] = "No Scene Found" // Outcome
-    vars["entry.2018139507"] = "No" // No Drugs
-    vars["entry.1842118913"] = "No" // No Mistakes
-    vars["entry.847941590"] = "No Patient"; // Triage
-    vars["entry.1807757148"] = "No Receiving Facility" // Destination Hospital
+    vars[GOOGLE_FORM.PRF_NUMBER] = "No PRF, No Scene Found"
+    vars[GOOGLE_FORM.OUTCOME] = "No Scene Found" // Outcome
+    vars[GOOGLE_FORM.PRF_DRUGS_USED] = "No" // No Drugs
+    vars[GOOGLE_FORM.PRF_MISTAKES_DETECTED] = "No" // No Mistakes
+    vars[GOOGLE_FORM.PATIENT_GENDER] = "No Patient"; // Triage
+    vars[GOOGLE_FORM.PATIENT_DESTINATION] = "No Receiving Facility" // Destination Hospital
   } else if (closeReason.toLowerCase() === 'Double Booking (Duplicated Call)') {
-    vars["entry.666285626"] = "No PRF, Duplicate Incident"
-    vars["entry.162948545"] = "Duplicate Incident" // Outcome
-    vars["entry.2018139507"] = "No" // No Drugs
-    vars["entry.1842118913"] = "No" // No Mistakes
-    vars["entry.847941590"] = "No Patient"; // Triage
-    vars["entry.1807757148"] = "No Receiving Facility" // Destination Hospital
+    vars[GOOGLE_FORM.PRF_NUMBER] = "No PRF, Duplicate Incident"
+    vars[GOOGLE_FORM.OUTCOME] = "Duplicate Incident" // Outcome
+    vars[GOOGLE_FORM.PRF_DRUGS_USED] = "No" // No Drugs
+    vars[GOOGLE_FORM.PRF_MISTAKES_DETECTED] = "No" // No Mistakes
+    vars[GOOGLE_FORM.PATIENT_GENDER] = "No Patient"; // Triage
+    vars[GOOGLE_FORM.PATIENT_DESTINATION] = "No Receiving Facility" // Destination Hospital
   }
 
   var proceed = () => {
-    vars["entry.524386880"] = findIncidentTime();
+    vars[GOOGLE_FORM.INCIDENT_TIME] = findIncidentTime();
     const closeReason = $("#closedReasonTitle").text()
     if (closeReason.substring(0, 10).toLowerCase() === 'outsourced') {
-      vars["entry.915011561"] = vars["entry.524386880"] // Paged Time
-      vars["entry.835032369"] = vars["entry.524386880"] // Free Time
-      vars["entry.666285626"] = "No PRF, Incident Outsourced"
-      vars["entry.1883567358"] = "Yes"
-      vars["entry.2018139507"] = "No" // No Drugs
-      vars["entry.1842118913"] = "No" // No Mistakes
-      vars["entry.27227789"] = "No" // No Induction
-      vars["entry.1807757148"] = "Unknown" // Destination Hospital
-      vars["entry.847941590"] = "Unknown"; // Triage
+      vars[GOOGLE_FORM.PAGED_TIME] = vars[GOOGLE_FORM.INCIDENT_TIME] // Paged Time
+      vars[GOOGLE_FORM.FREE_TIME] = vars[GOOGLE_FORM.INCIDENT_TIME] // Free Time
+      vars[GOOGLE_FORM.PRF_NUMBER] = "No PRF, Incident Outsourced"
+      vars[GOOGLE_FORM.CALL_OUTSOURCED] = "Yes"
+      vars[GOOGLE_FORM.PRF_DRUGS_USED] = "No" // No Drugs
+      vars[GOOGLE_FORM.PRF_MISTAKES_DETECTED] = "No" // No Mistakes
+      vars[GOOGLE_FORM.INDUCTION_SHIFT] = "No" // No Induction
+      vars[GOOGLE_FORM.PATIENT_DESTINATION] = "Unknown" // Destination Hospital
+      vars[GOOGLE_FORM.PATIENT_GENDER] = "Unknown"; // Triage
     }
 
     revealScheduledDate();
@@ -366,20 +402,20 @@ function buildEForm () {
 
   const whenYes = () => {
     // Incident Date
-    vars["entry.2077619580"] = findIncidentDate()
-    vars["entry.915011561"] = findIncidentTime()
+    vars[GOOGLE_FORM.INCIDENT_DATE] = findIncidentDate()
+    vars[GOOGLE_FORM.PAGED_TIME] = findIncidentTime()
     proceed();
   }
 
   const whenNo = () => {
     // Incident Date
-    vars["entry.2077619580"] = incidentDateFromReference()
+    vars[GOOGLE_FORM.INCIDENT_DATE] = incidentDateFromReference()
 
     let pagedTimeline = $("#timeline").find(
       `div.panel:contains('Incident Paged Out')`
     );
     if (pagedTimeline.length > 0) {
-      vars["entry.915011561"] = extractTimeFromTimelineElement(
+      vars[GOOGLE_FORM.PAGED_TIME] = extractTimeFromTimelineElement(
         "paged",
         pagedTimeline[pagedTimeline.length - 1]
       );
@@ -403,7 +439,7 @@ function buildEForm () {
       );
     }
     if (mobileTimeline.length > 0) {
-      vars["entry.295402896"] = extractTimeFromTimelineElement(
+      vars[GOOGLE_FORM.MOBILE_TIME] = extractTimeFromTimelineElement(
         "mobile",
         mobileTimeline[mobileTimeline.length - 1]
       );
@@ -415,7 +451,7 @@ function buildEForm () {
       `div.panel:contains(' - On Scene')`
     );
     if (onSceneTimeline.length > 0) {
-      vars["entry.865471720"] = extractTimeFromTimelineElement(
+      vars[GOOGLE_FORM.ON_SCENE_TIME] = extractTimeFromTimelineElement(
         "on scene",
         onSceneTimeline[onSceneTimeline.length - 1]
       );

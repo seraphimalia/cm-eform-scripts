@@ -1,0 +1,23 @@
+{
+  "name": "cm-eform-scripts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "cm.rpdy.io.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seraphimalia/cm-eform-scripts.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/seraphimalia/cm-eform-scripts/issues"
+  },
+  "homepage": "https://github.com/seraphimalia/cm-eform-scripts#readme",
+  "devDependencies": {
+    "@babel/cli": "7.12.10",
+    "@babel/core": "7.12.10"
+  }
+}
