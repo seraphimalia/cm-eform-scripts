@@ -1,0 +1,76 @@
+function addCSSFile (url) {
+    var stylesheet = document.createElement("link");
+    stylesheet.rel = "stylesheet";
+    stylesheet.href = url;
+    document.head.appendChild(stylesheet);
+}
+function addJSScript (url) {
+    var script = document.createElement("script");
+    script.type = "application/javascript";
+    script.src = url;
+    document.head.appendChild(script);
+}
+
+function addJQuery () {
+    addJSScript("https://code.jquery.com/jquery-3.5.1.min.js");
+}
+
+function addJQueryUi () {
+    addCSSFile("https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css");
+    addJSScript("https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js");
+}
+
+function addGoogleFormsScript () {
+    // addJSScript("https://cdn.jsdelivr.net/gh/seraphimalia/cm-eform-scripts@master/google-forms.min.js");
+    // addJSScript("https://rawgit.com/seraphimalia/cm-eform-scripts/master/start-eform.js");
+    // addJSScript("http://localhost:8000/start-eform.js");
+    addJSScript("http://localhost:8000/google-forms.js");
+    _cdlog("CDInjector: Eform Script Added.");
+}
+
+function _cdlog (text) {
+    if (document.location.href.indexOf('cdinjector-debug=true') !== -1) {
+        console.log(text);
+    }
+}
+
+function extractOrderNumberFromUrl (url) {
+    let ORDER_NUMBER_REGEX = /https:\/\/docs.google.com\/forms\/d\/e\/([\d\w]+)\/viewform(($)|(\?)|(\#))/;
+    let matches = ORDER_NUMBER_REGEX.exec(url);
+    if (matches && matches.length > 1 && !isNaN(matches[1])) {
+        return matches[1];
+    }
+    return undefined;
+}
+
+if (document.location.href.startsWith('https://cm.rpdy.io/Orders/') && extractOrderNumberFromUrl(document.location.href) > 0) {
+    _cdlog("CDInjector: Incident Page Detected");
+    if (document.readyState === "complete"
+        || document.readyState === "loaded"
+        || document.readyState === "interactive") {
+        addEFormScript();
+    } else {
+        document.addEventListener("DOMContentLoaded", function (event) {
+            //addJQueryUi();
+            addEFormScript();
+        });
+    }
+} else {
+    _cdlog("CDInjector: No Incident page was detected: " + document.location.href);
+}
+
+if (document.location.href.startsWith('https://cm.rpdy.io/Orders/New/')) {
+    _cdlog("CDInjector: Create Incident Page Detected");
+    if (document.readyState === "complete"
+        || document.readyState === "loaded"
+        || document.readyState === "interactive") {
+            addCreateIncidentRulesScript();
+    } else {
+        document.addEventListener("DOMContentLoaded", function (event) {
+            //addJQueryUi();
+            addCreateIncidentRulesScript();
+        });
+    }
+} else {
+    _cdlog("CDInjector: No Create Incident page was detected: " + document.location.href);
+}
