@@ -5,7 +5,9 @@
   "main": "cm.rpdy.io.js",
   "scripts": {
     "build": "babel src --out-dir lib",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_ENV=test mocha --recursive --exit test",
+    "test:watch": "NODE_ENV=test mocha --recursive test",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -20,6 +22,14 @@
   "devDependencies": {
     "@babel/cli": "7.12.10",
     "@babel/core": "7.12.10",
-    "babel-preset-minify": "0.5.1"
+    "babel-preset-minify": "0.5.1",
+    "eslint": "7.12.1",
+    "eslint-config-standard": "^16.0.0",
+    "eslint-plugin-import": "2.22.1",
+    "eslint-plugin-node": "11.1.0",
+    "eslint-plugin-promise": "4.2.1",
+    "eslint-plugin-standard": "4.0.2",
+    "mocha": "8.2.1",
+    "simple-mock": "0.8.0"
   }
 }
