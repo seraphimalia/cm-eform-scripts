@@ -5,10 +5,13 @@
 //   document.head.appendChild(stylesheet)
 // }
 
-function addJSScript (url) {
+function addJSScript (url, module = false) {
   const script = document.createElement('script')
   script.type = 'application/javascript'
   script.src = url
+  if (module) {
+    script.type = 'module'
+  }
   document.head.appendChild(script)
 }
 
@@ -18,22 +21,23 @@ function addJSScript (url) {
 // }
 
 function addEFormScript () {
-  // addJSScript("https://cdn.jsdelivr.net/gh/seraphimalia/cm-eform-scripts@master/start-eform.min.js");
+  addJSScript('https://cdn.jsdelivr.net/gh/seraphimalia/cm-eform-scripts@master/src/e-form/index.js')
   // addJSScript("https://rawgit.com/seraphimalia/cm-eform-scripts/master/start-eform.js");
-  addJSScript('https://deploy-preview-1--cm-eform-scripts.netlify.app/e-form/index.js')
-  _cdlog('CDInjector: Eform Script Added.')
+  // addJSScript('https://deploy-preview-1--cm-eform-scripts.netlify.app/e-form/index.js')
+  // addJSScript('https://testing.local.munro.co.za:8000/e-form/index.js', true)
+  _cdlog('Eform Script Added.')
 }
 
 function addCreateIncidentRulesScript () {
-  addJSScript('https://cdn.jsdelivr.net/gh/seraphimalia/cm-eform-scripts@master/create-incident-rules.js')
+  addJSScript('https://cdn.jsdelivr.net/gh/seraphimalia/cm-eform-scripts@master/src/create-incident-rules.js')
   // addJSScript("https://rawgit.com/seraphimalia/cm-eform-scripts/master/create-incident-rules.js");
-  // addJSScript("http://localhost:8000/create-incident-rules.js");
-  _cdlog('CDInjector: Create Incident Rules Script Added.')
+  // addJSScript('https://testing.local.munro.co.za:8000/create-incident-rules.js')
+  _cdlog('Create Incident Rules Script Added.')
 }
 
 function _cdlog (text) {
   if (document.location.href.indexOf('cdinjector-debug=true') !== -1) {
-    console.log(text)
+    console.log(`CDInjector: ${text}`)
   }
 }
 
@@ -46,11 +50,12 @@ function extractOrderNumberFromUrl (url) {
   return undefined
 }
 
-if (document.location.href.startsWith('https://cm.rpdy.io/Orders/') && extractOrderNumberFromUrl(document.location.href) > 0) {
-  _cdlog('CDInjector: Incident Page Detected')
-  if (document.readyState === 'complete' ||
-        document.readyState === 'loaded' ||
-        document.readyState === 'interactive') {
+if (
+  document.location.href.startsWith('https://cm.rpdy.io/Orders/') &&
+  extractOrderNumberFromUrl(document.location.href) > 0
+) {
+  _cdlog('Incident Page Detected')
+  if (document.readyState === 'complete' || document.readyState === 'loaded' || document.readyState === 'interactive') {
     addEFormScript()
   } else {
     document.addEventListener('DOMContentLoaded', function (event) {
@@ -59,14 +64,12 @@ if (document.location.href.startsWith('https://cm.rpdy.io/Orders/') && extractOr
     })
   }
 } else {
-  _cdlog('CDInjector: No Incident page was detected: ' + document.location.href)
+  _cdlog('No Incident page was detected: ' + document.location.href)
 }
 
 if (document.location.href.startsWith('https://cm.rpdy.io/Orders/New/')) {
-  _cdlog('CDInjector: Create Incident Page Detected')
-  if (document.readyState === 'complete' ||
-        document.readyState === 'loaded' ||
-        document.readyState === 'interactive') {
+  _cdlog('Create Incident Page Detected')
+  if (document.readyState === 'complete' || document.readyState === 'loaded' || document.readyState === 'interactive') {
     addCreateIncidentRulesScript()
   } else {
     document.addEventListener('DOMContentLoaded', function (event) {
@@ -75,5 +78,5 @@ if (document.location.href.startsWith('https://cm.rpdy.io/Orders/New/')) {
     })
   }
 } else {
-  _cdlog('CDInjector: No Create Incident page was detected: ' + document.location.href)
+  _cdlog('No Create Incident page was detected: ' + document.location.href)
 }
