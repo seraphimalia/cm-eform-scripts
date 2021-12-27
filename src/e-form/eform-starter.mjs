@@ -67,9 +67,15 @@ export default class EformStarter {
   buildEForm () {
     const incidentDescription = this.scraper.getIncidentDescription().toLowerCase()
     if (incidentDescription.indexOf('backlog') >= 0) {
-      this.buildEFormContinue(true)
+      try {
+        this.buildEFormContinue(true)
+      } catch (error) {
+        this.logger.error('Error Building eForm', error)
+      }
     } else {
-      this.ConfirmDialog('Is this a backlogged incident?').then(isBacklogged => this.buildEFormContinue(isBacklogged))
+      this.ConfirmDialog('Is this a backlogged incident?')
+        .then(isBacklogged => this.buildEFormContinue(isBacklogged))
+        .catch(error => this.logger.error('Error Building eForm', error))
     }
   }
 
