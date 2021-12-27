@@ -192,7 +192,7 @@ export default class {
 
     for (let i = notes.length - 1; i >= 0; i--) {
       const callsign = this.extractCallsignFromTimelineElement(notes[i], true)
-      if (this.isCMCallsign(callsign, true)) {
+      if (callsign && this.isCMCallsign(callsign, true)) {
         interestingOnSceneTimeStamps.push({
           callsign,
           time: this.extractTimeFromTimelineElement('firstOnScene', notes[i])
@@ -445,6 +445,9 @@ export default class {
   }
 
   isCMCallsign (callsign, includeRV) {
+    if (typeof callsign === 'undefined' || callsign === '') {
+      return false
+    }
     const CALLSIGN_PATTERN = includeRV ? /([A-Z][A-Z]\d{2,3})(\D|$)/g : /([A-QS-Z][A-Z]\d{2,3})(\D|$)/g
     return callsign.match(CALLSIGN_PATTERN)
   }
