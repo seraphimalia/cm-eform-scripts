@@ -236,9 +236,10 @@ export default class {
       return this.determineCallsignVehicle(interestingOnSceneTimeStamps[earliestTimestampIndex].callsign)
     }
 
-    if (this.countResponders() > 0) {
-      return 'Private Vehicle'
-    }
+    // TEMPORARILY DESABLED because of RD bug that marks all responders as departed when closing call.
+    // if (this.countResponders() > 0) {
+    //  return 'Private Vehicle'
+    // }
 
     return ''
   }
@@ -454,8 +455,18 @@ export default class {
       firstTwoCharacters === 'CS'
     ) {
       return callsign
+    } else if (
+      firstTwoCharacters === 'MR' ||
+      firstTwoCharacters === 'FR' ||
+      firstTwoCharacters === 'EF' ||
+      firstTwoCharacters === 'CA' ||
+      firstTwoCharacters === 'OM' ||
+      firstTwoCharacters === 'DR' ||
+      firstTwoCharacters === 'NR'
+    ) {
+      return 'Private Vehicle'
     }
-    return 'Private Vehicle'
+    return ''
   }
 
   extractCallTypeFromElement (primaryTypeElement) {

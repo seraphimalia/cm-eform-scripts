@@ -142,8 +142,8 @@ export default class EformStarter {
     // response
     const responseFields = {
       firstCMVehicleOnScene: scraper.getFirstCMVehicleOnScene(),
-      responderCallsigns: scraper.getResponderCallsigns(),
-      outsourced: scraper.countResponders() > 0 || scraper.getFirstCMVehicleOnScene() ? 'No' : 'Yes'
+      responderCallsigns: '', // TEMPORARILY DISABLED because of RD bug that marks all responders departed when closing a call, was: scraper.getResponderCallsigns(),
+      outsourced: scraper.getFirstCMVehicleOnScene() ? 'No' : '' // TEMPORARILY CHANGED because of RD bug that marks all responders departed when closing a call, was: scraper.countResponders() > 0 || scraper.getFirstCMVehicleOnScene() ? 'No' : 'Yes'
     }
 
     return {
