@@ -67,9 +67,15 @@ export default class EformStarter {
   buildEForm () {
     const incidentDescription = this.scraper.getIncidentDescription().toLowerCase()
     if (incidentDescription.indexOf('backlog') >= 0) {
-      this.buildEFormContinue(true)
+      try {
+        this.buildEFormContinue(true)
+      } catch (error) {
+        this.logger.error('Error Building eForm', error)
+      }
     } else {
-      this.ConfirmDialog('Is this a backlogged incident?').then(isBacklogged => this.buildEFormContinue(isBacklogged))
+      this.ConfirmDialog('Is this a backlogged incident?')
+        .then(isBacklogged => this.buildEFormContinue(isBacklogged))
+        .catch(error => this.logger.error('Error Building eForm', error))
     }
   }
 
@@ -89,7 +95,7 @@ export default class EformStarter {
     this.logger.debug('Common Fields', commonIncidentFields)
 
     const uploadedForms = this.getUploadedFormFields()
-    this.logger.debug('Uploaded Forms', commonIncidentFields)
+    this.logger.debug('Uploaded Forms', uploadedForms)
 
     if (uploadedForms.length > 0) {
       commonIncidentFields.outsourced = 'No'
@@ -142,8 +148,8 @@ export default class EformStarter {
     // response
     const responseFields = {
       firstCMVehicleOnScene: scraper.getFirstCMVehicleOnScene(),
-      responderCallsigns: scraper.getResponderCallsigns(),
-      outsourced: scraper.countResponders() > 0 || scraper.getFirstCMVehicleOnScene() ? 'No' : 'Yes'
+      responderCallsigns: '', // TEMPORARILY DISABLED because of RD bug that marks all responders departed when closing a call, was: scraper.getResponderCallsigns(),
+      outsourced: scraper.getFirstCMVehicleOnScene() ? 'No' : '' // TEMPORARILY CHANGED because of RD bug that marks all responders departed when closing a call, was: scraper.countResponders() > 0 || scraper.getFirstCMVehicleOnScene() ? 'No' : 'Yes'
     }
 
     return {
@@ -171,6 +177,11 @@ export default class EformStarter {
       uploadedFormFields.push(metroPts[i])
     }
 
+    const dods = scraper.getDODFormFields()
+    for (let i = 0; i < dods.length; i++) {
+      uploadedFormFields.push(dods[i])
+    }
+
     return uploadedFormFields
   }
 
@@ -181,13 +192,14 @@ export default class EformStarter {
   ConfirmDialog (message) {
     return new Promise((resolve, reject) => {
       const $ = this.$
+      const destroyEformDialog = this.destroyEformDialog
       this.appendEformDialog(message)
-      $('#eFormDialogYes').click(function () {
-        this.destroyEformDialog()
+      $('#eFormDialogYes').click(() => {
+        destroyEformDialog({ $ })
         resolve(true)
       })
-      $('#eFormDialogNo').click(function () {
-        this.destroyEformDialog()
+      $('#eFormDialogNo').click(() => {
+        destroyEformDialog({ $ })
         resolve(false)
       })
 
@@ -199,8 +211,8 @@ export default class EformStarter {
     this.$('#eFormYesNoDialog').show()
   }
 
-  destroyEformDialog () {
-    this.$('#eFormYesNoDialog').remove()
+  destroyEformDialog ({ $ = this.$ } = {}) {
+    $('#eFormYesNoDialog').remove()
   }
 
   appendEformDialog (message) {

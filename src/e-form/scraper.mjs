@@ -13,6 +13,7 @@ export default class {
   }
 
   findIncidentDate () {
+    // FIRST CHECK DESCRIPTION
     const descriptionText = this.$('#Description').text()
     const MATCH_DATE_PATTERN = /BACKLOG.+(20\d{2}((0[1-9])|(1[0-2]))(([0-2][0-9])|(3[0-1])))/
     const PATTERN_GROUP = 1
@@ -22,6 +23,25 @@ export default class {
       const s = match[PATTERN_GROUP]
       return [s.slice(0, 4), s.slice(4, 6), s.slice(6, 8)].join('-')
     }
+
+    // THEN CHECK WINDOW OBJECT
+    if (
+      window &&
+      window.IncidentObject &&
+      window.IncidentObject.Incident &&
+      window.IncidentObject.Incident.TimeStamp &&
+      window.IncidentObject.Incident.TimeStamp.indexOf('T') > 0
+    ) {
+      return window.IncidentObject.Incident.TimeStamp.split('T')[0]
+    }
+
+    // THEN CHECK TIMELINE
+    const incidentNumber = this.getIncidentNumber()
+    const createdTimeline = this.$('#timeline').find(`div.panel:contains('Incident ${incidentNumber} created')`)
+    if (createdTimeline.length > 0) {
+      return this.extractDateFromTimelineElement('paged', createdTimeline[createdTimeline.length - 1])
+    }
+
     return ''
   }
 
@@ -73,6 +93,7 @@ export default class {
       return matchDescription[PATTERN_GROUP]
     }
 
+    // THEN CHECK NOTES
     const notes = $('#NotesTable').find('div >> p')
 
     for (let i = notes.length - 1; i >= 0; i--) {
@@ -87,6 +108,18 @@ export default class {
       }
     }
 
+    // THEN CHECK WINDOW OBJECT
+    if (
+      window &&
+      window.IncidentObject &&
+      window.IncidentObject.Incident &&
+      window.IncidentObject.Incident.TimeStamp &&
+      window.IncidentObject.Incident.TimeStamp.indexOf('T') > 0
+    ) {
+      return window.IncidentObject.Incident.TimeStamp.split('T')[1].substring(0, 5)
+    }
+
+    // THEN CHECK HIDDEN DATE FIELD
     const incidentTimeStr = $('#ScheduleDateTime').html()
     const incidentSplit = incidentTimeStr.split(' ')
     const timeStr = incidentSplit[1]
@@ -99,9 +132,17 @@ export default class {
       return this.findIncidentTime()
     }
 
+    // Look for Incident Paged Out
     const pagedTimeline = this.$('#timeline').find("div.panel:contains('Incident Paged Out')")
     if (pagedTimeline.length > 0) {
       return this.extractTimeFromTimelineElement('paged', pagedTimeline[pagedTimeline.length - 1])
+    }
+
+    // Look for Incident ${IncidentNumber} created
+    const incidentNumber = this.getIncidentNumber()
+    const createdTimeline = this.$('#timeline').find(`div.panel:contains('Incident ${incidentNumber} created')`)
+    if (createdTimeline.length > 0) {
+      return this.extractTimeFromTimelineElement('paged', createdTimeline[createdTimeline.length - 1])
     }
 
     return ''
@@ -130,22 +171,75 @@ export default class {
   getFirstCMVehicleOnScene () {
     const $ = this.$
 
-    const firstOnSceneTimeline = $('#timeline').find("div.panel:contains(' - On Scene')")
+    // First check timeline
+    const firstOnSceneTimeline = $('#timeline').find("div.panel:contains('unit status changed On Scene')")
+    const interestingOnSceneTimeStamps = []
     if (firstOnSceneTimeline.length > 0) {
-      const callsign = this.extractVehicleCallsignFromTimelineElement(
-        firstOnSceneTimeline[firstOnSceneTimeline.length - 1]
-      )
-      if (callsign) {
-        return this.determineCallsignVehicle(callsign)
-      } else if (this.countResponders() > 0) {
-        return 'Private Vehicle'
-      }
+      interestingOnSceneTimeStamps.push({
+        callsign: this.extractCallsignFromTimelineElement(firstOnSceneTimeline[firstOnSceneTimeline.length - 1], true),
+        time: this.extractTimeFromTimelineElement('firstOnScene', firstOnSceneTimeline[firstOnSceneTimeline.length - 1])
+      })
     } else {
-      this.logger.debug('There was no history for First On Scene')
-      if (this.countResponders() > 0) {
-        return 'Private Vehicle'
+      this.logger.debug('There was no timeline history for First On Scene')
+    }
+
+    // Then check notes text
+    const notes = $('#NotesTable')
+      .find('div >> p')
+      .filter(function () {
+        return this.innerText.match(/((\sOn\sScene)|(\sAlpha))/gi)
+      })
+
+    for (let i = notes.length - 1; i >= 0; i--) {
+      const callsign = this.extractCallsignFromTimelineElement(notes[i], true)
+      if (this.isCMCallsign(callsign, true)) {
+        interestingOnSceneTimeStamps.push({
+          callsign,
+          time: this.extractTimeFromTimelineElement('firstOnScene', notes[i])
+        })
       }
     }
+
+    // Then check stamped notes text
+    const stampedNotes = $('#NotesTable')
+      .children()
+      .filter(function () {
+        return this.innerText.match(/((\sOn\sScene)|(\sAlpha))/gi)
+      })
+
+    for (let i = stampedNotes.length - 1; i >= 0; i--) {
+      const callsign = this.extractCallsignFromTimelineElement(stampedNotes[i], true)
+      if (this.isCMCallsign(callsign, true)) {
+        interestingOnSceneTimeStamps.push({
+          callsign,
+          time: this.extractTimeFromTimelineElement('firstOnScene', stampedNotes[i])
+        })
+      }
+    }
+
+    const getEarliestTimestampIndex = timeStamps => {
+      if (timeStamps.length === 0) {
+        return -1
+      }
+
+      let index = 0
+      for (let i = 1; i < timeStamps.length; i++) {
+        if (timeStamps[index].time > timeStamps[i].time) {
+          index = i
+        }
+      }
+      return index
+    }
+
+    if (interestingOnSceneTimeStamps.length > 0) {
+      const earliestTimestampIndex = getEarliestTimestampIndex(interestingOnSceneTimeStamps)
+      return this.determineCallsignVehicle(interestingOnSceneTimeStamps[earliestTimestampIndex].callsign)
+    }
+
+    // TEMPORARILY DESABLED because of RD bug that marks all responders as departed when closing call.
+    // if (this.countResponders() > 0) {
+    //  return 'Private Vehicle'
+    // }
 
     return ''
   }
@@ -226,6 +320,11 @@ export default class {
     return this.getFormFields(container, 'METRO')
   }
 
+  getDODFormFields () {
+    const container = this.getDODContainer()
+    return this.getFormFields(container, 'DOD')
+  }
+
   getFormFields (container, formType) {
     const prfs = []
 
@@ -243,15 +342,26 @@ export default class {
         numberField = 'SLIP Number'
         break
       }
+      case 'DOD': {
+        numberField = 'PRF Declaration Number'
+        break
+      }
     }
 
     if (container.length > 0) {
       for (let i = 0; i < container.length; i++) {
-        if (
-          container.find(`label:contains('${numberField}')`)[i].nextSibling.value.length > 0 &&
-          typeof container.find("label:contains('Triage')")[i] !== 'undefined'
-        ) {
+        if (container.find(`label:contains('${numberField}')`)[i].nextSibling.value.length > 0) {
           const prf = {}
+
+          if (formType === 'DOD') {
+            prf.formNumber = container.find(`label:contains('${numberField}')`)[i].nextSibling.value
+            prf.triage = 'Blue'
+            prf.outsourced = 'No'
+            prf.usedDrugs = 'No' // No Drugs
+            prfs.push(prf)
+            continue
+          }
+
           if (formType === 'RHT' || formType === 'PRF') {
             prf.formNumber =
               (formType === 'RHT' ? 'RHT' : '') +
@@ -280,15 +390,30 @@ export default class {
   // UTILS
   /// ////////////////////////////////////
 
-  extractTimeFromTimelineElement (name, timelineElement) {
+  matchTimestampFromTimelineElement (name, timelineElement) {
     const TIME_PATTERN = /(\d{4}-\d{2}-\d{2})?\D+(\d{2}:\d{2})/g
     const innerText = timelineElement.innerText
     const match = TIME_PATTERN.exec(innerText)
+    if (!match) {
+      this.logger.debug('No ' + name + ' Time found: ' + innerText)
+    }
+    return match
+  }
+
+  extractTimeFromTimelineElement (name, timelineElement) {
+    const match = this.matchTimestampFromTimelineElement(name, timelineElement)
     if (match) {
       this.logger.debug('Found ' + name + ' Time ' + match[2])
       return match[2]
-    } else {
-      this.logger.debug('No ' + name + ' Time found: ' + innerText)
+    }
+    return ''
+  }
+
+  extractDateFromTimelineElement (name, timelineElement) {
+    const match = this.matchTimestampFromTimelineElement(name, timelineElement)
+    if (match) {
+      this.logger.debug('Found ' + name + ' Date ' + match[1])
+      return match[1]
     }
     return ''
   }
@@ -319,6 +444,11 @@ export default class {
     return callsign
   }
 
+  isCMCallsign (callsign, includeRV) {
+    const CALLSIGN_PATTERN = includeRV ? /([A-Z][A-Z]\d{2,3})(\D|$)/g : /([A-QS-Z][A-Z]\d{2,3})(\D|$)/g
+    return callsign.match(CALLSIGN_PATTERN)
+  }
+
   extractVehicleCallsignFromTimelineElement (timelineElement) {
     const $ = this.$
 
@@ -341,9 +471,18 @@ export default class {
       firstTwoCharacters === 'CS'
     ) {
       return callsign
-    } else {
+    } else if (
+      firstTwoCharacters === 'MR' ||
+      firstTwoCharacters === 'FR' ||
+      firstTwoCharacters === 'EF' ||
+      firstTwoCharacters === 'CA' ||
+      firstTwoCharacters === 'OM' ||
+      firstTwoCharacters === 'DR' ||
+      firstTwoCharacters === 'NR'
+    ) {
       return 'Private Vehicle'
     }
+    return ''
   }
 
   extractCallTypeFromElement (primaryTypeElement) {
@@ -390,5 +529,11 @@ export default class {
       .find('div[data-checklist-id]')
       .has("label:contains('SLIP Number')")
       .has("label:contains('Triage')")
+  }
+
+  getDODContainer () {
+    return this.$('#ChecklistsContainer')
+      .find('div[data-checklist-id]')
+      .has("label:contains('PRF Declaration Number')")
   }
 }
