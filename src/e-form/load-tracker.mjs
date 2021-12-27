@@ -11,7 +11,7 @@ export default class {
     this.waitForLoadAndPost()
   }
 
-  postIncidentNumberWithUrl ($ = this.$, scraper = this.scraper) {
+  postIncidentNumberWithUrl ({ $ = this.$, scraper = this.scraper } = {}) {
     const incidentNumber = $('#IncidentReference').text()
     const incidentDate = scraper.findIncidentDate() || scraper.incidentDateFromReference()
     const Url = window.location.href
@@ -35,12 +35,13 @@ export default class {
   waitForLoadAndPost ({
     $ = this.$,
     postIncidentNumberWithUrl = this.postIncidentNumberWithUrl,
-    waitForLoadAndPost = this.waitForLoadAndPost
+    waitForLoadAndPost = this.waitForLoadAndPost,
+    scraper = this.scraper
   } = {}) {
     if ($('#ToggleStatus[data-statusid=2]').length > 0) {
-      postIncidentNumberWithUrl()
+      postIncidentNumberWithUrl({ $, scraper })
     } else {
-      setTimeout(() => waitForLoadAndPost({ $, postIncidentNumberWithUrl, waitForLoadAndPost }), 5000)
+      setTimeout(() => waitForLoadAndPost({ $, postIncidentNumberWithUrl, waitForLoadAndPost, scraper }), 5000)
     }
   }
 }
