@@ -2,6 +2,7 @@ import Scraper from './scraper.mjs'
 import Logic from './logic.mjs'
 import Mapper from './mapper.mjs'
 
+const ACCOUNT_CHOOSER_PREFIX = 'https://www.google.com/accounts/AccountChooser?Email=&continue='
 const BASE_EFORM_URL =
   'https://docs.google.com/forms/d/e/1FAIpQLSfpAaoTFKcq5z_w8L13Y2Diklb20HuT9c5HKZMhD7GJu4VPWQ/viewform'
 
@@ -125,7 +126,8 @@ export default class EformStarter {
       params += `${this.mapper.getFormIdFromPropertyName(prop)}=${encodeURIComponent(perFormData[prop])}`
     }
 
-    return `${BASE_EFORM_URL}${params}`
+    const encodedEformUrl = encodeURIComponent(`${BASE_EFORM_URL}${params}`)
+    return `${ACCOUNT_CHOOSER_PREFIX}${encodedEformUrl}`
   }
 
   getCommonIncidentFields (isBacklogged, { scraper = this.scraper, logic = this.logic } = {}) {
