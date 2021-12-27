@@ -95,7 +95,7 @@ export default class EformStarter {
     this.logger.debug('Common Fields', commonIncidentFields)
 
     const uploadedForms = this.getUploadedFormFields()
-    this.logger.debug('Uploaded Forms', commonIncidentFields)
+    this.logger.debug('Uploaded Forms', uploadedForms)
 
     if (uploadedForms.length > 0) {
       commonIncidentFields.outsourced = 'No'
@@ -175,6 +175,11 @@ export default class EformStarter {
     const metroPts = scraper.getMetroAmboFormFields()
     for (let i = 0; i < metroPts.length; i++) {
       uploadedFormFields.push(metroPts[i])
+    }
+
+    const dods = scraper.getDODFormFields()
+    for (let i = 0; i < dods.length; i++) {
+      uploadedFormFields.push(dods[i])
     }
 
     return uploadedFormFields

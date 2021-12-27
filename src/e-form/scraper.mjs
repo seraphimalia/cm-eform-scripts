@@ -320,6 +320,11 @@ export default class {
     return this.getFormFields(container, 'METRO')
   }
 
+  getDODFormFields () {
+    const container = this.getDODContainer()
+    return this.getFormFields(container, 'DOD')
+  }
+
   getFormFields (container, formType) {
     const prfs = []
 
@@ -337,15 +342,26 @@ export default class {
         numberField = 'SLIP Number'
         break
       }
+      case 'DOD': {
+        numberField = 'PRF Declaration Number'
+        break
+      }
     }
 
     if (container.length > 0) {
       for (let i = 0; i < container.length; i++) {
-        if (
-          container.find(`label:contains('${numberField}')`)[i].nextSibling.value.length > 0 &&
-          typeof container.find("label:contains('Triage')")[i] !== 'undefined'
-        ) {
+        if (container.find(`label:contains('${numberField}')`)[i].nextSibling.value.length > 0) {
           const prf = {}
+
+          if (formType === 'DOD') {
+            prf.formNumber = container.find(`label:contains('${numberField}')`)[i].nextSibling.value
+            prf.triage = 'Blue'
+            prf.outsourced = 'No'
+            prf.usedDrugs = 'No' // No Drugs
+            prfs.push(prf)
+            continue
+          }
+
           if (formType === 'RHT' || formType === 'PRF') {
             prf.formNumber =
               (formType === 'RHT' ? 'RHT' : '') +
@@ -513,5 +529,11 @@ export default class {
       .find('div[data-checklist-id]')
       .has("label:contains('SLIP Number')")
       .has("label:contains('Triage')")
+  }
+
+  getDODContainer () {
+    return this.$('#ChecklistsContainer')
+      .find('div[data-checklist-id]')
+      .has("label:contains('PRF Declaration Number')")
   }
 }
