@@ -181,13 +181,14 @@ export default class EformStarter {
   ConfirmDialog (message) {
     return new Promise((resolve, reject) => {
       const $ = this.$
+      const destroyEformDialog = this.destroyEformDialog
       this.appendEformDialog(message)
-      $('#eFormDialogYes').click(function () {
-        this.destroyEformDialog()
+      $('#eFormDialogYes').click(() => {
+        destroyEformDialog({ $ })
         resolve(true)
       })
-      $('#eFormDialogNo').click(function () {
-        this.destroyEformDialog()
+      $('#eFormDialogNo').click(() => {
+        destroyEformDialog({ $ })
         resolve(false)
       })
 
@@ -199,8 +200,8 @@ export default class EformStarter {
     this.$('#eFormYesNoDialog').show()
   }
 
-  destroyEformDialog () {
-    this.$('#eFormYesNoDialog').remove()
+  destroyEformDialog ({ $ = this.$ } = {}) {
+    $('#eFormYesNoDialog').remove()
   }
 
   appendEformDialog (message) {
