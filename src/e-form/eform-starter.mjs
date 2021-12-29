@@ -82,9 +82,12 @@ export default class EformStarter {
 
   buildEFormContinue (isBacklogged) {
     const eFormData = this.collectEformData(isBacklogged)
+
     for (let i = 0; i < eFormData.length; i++) {
       const perFormData = eFormData[i]
       const eFormUrl = this.buildEformUrl(perFormData)
+
+      this.logger.debug('Opening eForm with URL', eFormUrl)
       window.open(eFormUrl)
     }
   }
@@ -104,7 +107,7 @@ export default class EformStarter {
       commonIncidentFields.treatedPatient = 'Yes, there is a Form uploaded'
     }
 
-    for (let i = 0; i <= uploadedForms.length; i++) {
+    for (let i = 0; i < uploadedForms.length; i++) {
       const formData = {
         ...commonIncidentFields,
         ...uploadedForms[i]
@@ -116,17 +119,14 @@ export default class EformStarter {
   }
 
   buildEformUrl (perFormData) {
-    let params = ''
-    for (const prop in perFormData) {
-      if (params === '') {
-        params += '?'
-      } else {
-        params += '&'
-      }
-      params += `${this.mapper.getFormIdFromPropertyName(prop)}=${encodeURIComponent(perFormData[prop])}`
-    }
+    const mapper = this.mapper
+    const queryString = Object.keys(perFormData)
+      .map(function (key) {
+        return mapper.getFormIdFromPropertyName(key) + '=' + encodeURIComponent(perFormData[key])
+      })
+      .join('&')
 
-    const encodedEformUrl = encodeURIComponent(`${BASE_EFORM_URL}${params}`)
+    const encodedEformUrl = encodeURIComponent(`${BASE_EFORM_URL}?${queryString}`)
     return `${ACCOUNT_CHOOSER_PREFIX}${encodedEformUrl}`
   }
 
