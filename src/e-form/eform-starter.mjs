@@ -25,14 +25,32 @@ export default class EformStarter {
     doubleCheckEformButtonExists = this.doubleCheckEformButtonExists,
     logger = this.logger
   } = {}) {
+    const isStaging = window.localStorage.getItem('cdInjector.isStaging', false) === 'true'
+    const checkStagingSwitch = () => {
+      let nextEnv = 'staging'
+      if (isStaging) {
+        nextEnv = 'production'
+      }
+      if (window.confirm(`Are you sure you want to switch the eForm tool to ${nextEnv}`)) {
+        window.localStorage.setItem('cdInjector.isStaging', !isStaging)
+        window.location.reload()
+      }
+    }
+
     if ($('#ToggleStatus[data-statusid=1]').length > 0) {
       $('#ActiveOrderMenu').append(() =>
-        $('<span id="StartEformMenu"><a class="btn btn-xs btn-default" id="BuildEForm">Start eForm</a></span>').click(
-          () => {
+        $(
+          `<span id="StartEformMenu"><a class="btn btn-xs btn-default" id="BuildEForm" oncontextmenu="return false;">Start eForm${
+            isStaging ? ' (Staging)' : ''
+          }</a></span>`
+        ).mousedown(event => {
+          if (event.which === 1) {
             const eFormStarter = new EformStarter($, logger)
             eFormStarter.buildEForm()
+          } else if (event.which === 3) {
+            checkStagingSwitch()
           }
-        )
+        })
       )
       if ($('#BuildEForm').length === 0) {
         logger.debug('EForm Button Not Added, Trying again Later!')
