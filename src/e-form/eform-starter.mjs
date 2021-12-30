@@ -82,7 +82,9 @@ export default class EformStarter {
 
   buildEFormContinue (isBacklogged) {
     const eFormData = this.collectEformData(isBacklogged)
-    this.logger.debug('WE ARE HERE!', eFormData)
+
+    this.logger.debug(`eFormData contains ${eFormData.length} elements`)
+
     for (let i = 0; i < eFormData.length; i++) {
       const perFormData = eFormData[i]
       const eFormUrl = this.buildEformUrl(perFormData)
@@ -113,6 +115,10 @@ export default class EformStarter {
         ...uploadedForms[i]
       }
       eFormData.push(formData)
+    }
+
+    if (eFormData.length === 0) {
+      eFormData.push(commonIncidentFields)
     }
 
     return eFormData
