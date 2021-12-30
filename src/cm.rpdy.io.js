@@ -23,7 +23,7 @@ function addJSScript (url, module = false) {
 function addEFormScript () {
   // addJSScript('https://cdn.jsdelivr.net/gh/seraphimalia/cm-eform-scripts@master/src/e-form/index.js', true)
   // addJSScript("https://rawgit.com/seraphimalia/cm-eform-scripts/master/src/e-form/index.js", true);
-  addJSScript('https://deploy-preview-1--cm-eform-scripts.netlify.app/src/e-form/index.js', true)
+  addJSScript('https://deploy-preview-1--cm-eform-scripts.netlify.app/e-form/index.js', true)
   // addJSScript('https://testing.local.munro.co.za:8000/e-form/index.js', true)
   _cdlog('Eform Script Added.')
 }
