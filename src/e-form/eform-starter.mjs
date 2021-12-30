@@ -82,7 +82,7 @@ export default class EformStarter {
 
   buildEFormContinue (isBacklogged) {
     const eFormData = this.collectEformData(isBacklogged)
-
+    this.logger.debug('WE ARE HERE!', eFormData)
     for (let i = 0; i < eFormData.length; i++) {
       const perFormData = eFormData[i]
       const eFormUrl = this.buildEformUrl(perFormData)
